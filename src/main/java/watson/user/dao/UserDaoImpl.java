@@ -6,7 +6,9 @@ import org.hibernate.SessionFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import watson.user.model.HPUser;
+import watson.user.model.Request;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -23,6 +25,7 @@ public class UserDaoImpl implements UserDao {
         this.sessionFactory = sessionFactory;
     }
 
+    @Transactional
     @Override
     public HPUser getHPUserByDomainUserName(String domainUserName, String instance) {
         HPUser hpUser = null;
@@ -34,9 +37,25 @@ public class UserDaoImpl implements UserDao {
         return hpUser;
     }
 
+    @Transactional
+    @Override
+    public String submitRequest(String domainUserName, String instance, String comments) {
+        Request request = new Request(domainUserName, instance, comments);
+        request.setManagerProceed("IN");
+        sessionFactory.getCurrentSession().save(request);
+        return request.getRequestID();
+    }
+
+    @Override
+    public String getManager(String domainUserName) {
+        //fake manager info
+        return "xiaoyao8823@gmail.com";
+    }
+
     public static void main(String[] args) {
         ApplicationContext applicationContext =new ClassPathXmlApplicationContext("application.xml");
-        UserDaoImpl hpUserDao = applicationContext.getBean("userDao", UserDaoImpl.class);
-        System.out.println(hpUserDao.getHPUserByDomainUserName("asiapacific\\xiaoyao", "apwatson"));
+        UserDao hpUserDao = applicationContext.getBean("userDaoImpl", UserDao.class);
+        //System.out.println(hpUserDao.getHPUserByDomainUserName("asiapacific\\xiaoyao", "apwatson"));
+        hpUserDao.submitRequest("asiapacific\\xiaoyao", "apwatson", "need access to Watson");
     }
 }

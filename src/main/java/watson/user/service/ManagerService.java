@@ -1,7 +1,16 @@
 package watson.user.service;
 
-public interface ManagerService {
-    public void approveRequest(String domainUserName, String instance);
+import watson.user.model.Request;
 
-    public void rejectRequest(String domainUserName, String instance);
+public interface ManagerService {
+
+    public Request reviewRequest(String requestID);
+
+    public void approveRequest(String requestID, String managerEmail, String comments);
+
+    public void denyRequest(String requestID, String managerEmail, String comments);
+
+    public void passToCountryRep(String requestID);
+
+    public void passToRegionalRep(String requestID);
 }

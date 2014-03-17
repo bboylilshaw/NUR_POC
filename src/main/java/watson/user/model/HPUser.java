@@ -4,31 +4,30 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.util.Date;
-import java.util.UUID;
 
 @Entity
 @Table(name = "HPUSER")
 public class HPUser {
-    private UUID gid;
+    private String gid;
     private String domainUserName;
-    private int employeeID;
+    private String name;
     private String firstName;
     private String lastName;
-    private String name;
+    private int employeeID;
     private String employeeEmail;
     private String userStatus;
     private Date lastLoginDate;
-    private Date createdDate;
+    private Date createDate;
     private Date lastModifyDate;
     private String createdBy;
     private String lastModifiedBy;
 
     @Id
-    public UUID getGid() {
+    public String getGid() {
         return gid;
     }
 
-    public void setGid(UUID gid) {
+    public void setGid(String gid) {
         this.gid = gid;
     }
 
@@ -40,12 +39,12 @@ public class HPUser {
         this.domainUserName = domainUserName;
     }
 
-    public int getEmployeeID() {
-        return employeeID;
+    public String getName() {
+        return name;
     }
 
-    public void setEmployeeID(int employeeID) {
-        this.employeeID = employeeID;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getFirstName() {
@@ -64,12 +63,12 @@ public class HPUser {
         this.lastName = lastName;
     }
 
-    public String getName() {
-        return name;
+    public int getEmployeeID() {
+        return employeeID;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setEmployeeID(int employeeID) {
+        this.employeeID = employeeID;
     }
 
     public String getEmployeeEmail() {
@@ -96,12 +95,12 @@ public class HPUser {
         this.lastLoginDate = lastLoginDate;
     }
 
-    public Date getCreatedDate() {
-        return createdDate;
+    public Date getCreateDate() {
+        return createDate;
     }
 
-    public void setCreatedDate(Date createdDate) {
-        this.createdDate = createdDate;
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
     }
 
     public Date getLastModifyDate() {

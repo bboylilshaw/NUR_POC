@@ -4,4 +4,8 @@ import watson.user.model.HPUser;
 
 public interface UserDao {
     public HPUser getHPUserByDomainUserName (String domainUserName, String instance);
+
+    public String submitRequest(String domainUserName, String instance, String comments);
+
+    public String getManager(String domainUserName);
 }
