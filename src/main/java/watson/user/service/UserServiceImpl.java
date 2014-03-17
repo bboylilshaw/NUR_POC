@@ -1,8 +1,8 @@
-package watson.admin.service;
+package watson.user.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import watson.admin.commons.UserValidator;
+import watson.user.commons.UserValidator;
 
 @Service
 public class UserServiceImpl implements UserService {

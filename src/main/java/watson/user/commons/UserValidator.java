@@ -1,15 +1,15 @@
-package watson.admin.commons;
+package watson.user.commons;
 
-import watson.admin.dao.HPUserDaoImpl;
+import watson.user.dao.UserDaoImpl;
 
 import javax.annotation.Resource;
 
 public class UserValidator {
 
-    private static HPUserDaoImpl hpUserDao;
+    private static UserDaoImpl hpUserDao;
 
     @Resource
-    public void setHpUserDao(HPUserDaoImpl hpUserDao) {
+    public void setHpUserDao(UserDaoImpl hpUserDao) {
         this.hpUserDao = hpUserDao;
     }
 

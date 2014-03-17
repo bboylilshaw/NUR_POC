@@ -1,7 +1,7 @@
-package watson.admin.dao;
+package watson.user.dao;
 
-import watson.admin.model.HPUser;
+import watson.user.model.HPUser;
 
-public interface HPUserDao {
+public interface UserDao {
     public HPUser getHPUserByDomainUserName (String domainUserName, String instance);
 }

@@ -1,4 +1,4 @@
-package watson.admin.model;
+package watson.user.model;
 
 import java.util.Date;
 import java.util.UUID;

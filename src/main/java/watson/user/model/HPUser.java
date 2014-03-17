@@ -1,4 +1,4 @@
-package watson.admin.model;
+package watson.user.model;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
