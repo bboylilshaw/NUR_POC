@@ -10,6 +10,7 @@ import java.util.Date;
 public class HPUser {
     private String gid;
     private String domainUserName;
+    private String instance;
     private String name;
     private String firstName;
     private String lastName;
@@ -37,6 +38,14 @@ public class HPUser {
 
     public void setDomainUserName(String domainUserName) {
         this.domainUserName = domainUserName;
+    }
+
+    public String getInstance() {
+        return instance;
+    }
+
+    public void setInstance(String instance) {
+        this.instance = instance;
     }
 
     public String getName() {

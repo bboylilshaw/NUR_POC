@@ -7,5 +7,7 @@ public interface UserDao {
 
     public String submitRequest(String domainUserName, String instance, String comments);
 
+    public boolean userExists(String domainUserName, String instance);
+
     public String getManager(String domainUserName);
 }

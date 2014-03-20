@@ -3,6 +3,7 @@ DROP TABLE IF EXISTS HPUSER;
 CREATE TABLE IF NOT EXISTS HPUSER (
   Gid            VARCHAR(36) NOT NULL PRIMARY KEY,
   DomainUserName VARCHAR(30) NOT NULL,
+  Instance       VARCHAR(10),
   Name           VARCHAR(30),
   FirstName      VARCHAR(30),
   LastName       VARCHAR(30),
@@ -16,8 +17,8 @@ CREATE TABLE IF NOT EXISTS HPUSER (
   LastModifiedBy VARCHAR(32)
 );
 
-DROP TABLE IF EXISTS USER_REG_REQUEST;
-CREATE TABLE IF NOT EXISTS USER_REG_REQUEST (
+DROP TABLE IF EXISTS REQUEST;
+CREATE TABLE IF NOT EXISTS REQUEST (
   RequestID              VARCHAR(36) NOT NULL PRIMARY KEY,
   DomainUserName         VARCHAR(30) NOT NULL,
   Instance               VARCHAR(10),
@@ -36,5 +37,6 @@ CREATE TABLE IF NOT EXISTS USER_REG_REQUEST (
   RegionalRepEmail       VARCHAR(30),
   RegionalRepProceed     VARCHAR(5),
   RegionalRepProceedDate DATETIME,
-  RegionalRepComments    VARCHAR(100)
+  RegionalRepComments    VARCHAR(100),
+  FinalResult            VARCHAR(4)
 )

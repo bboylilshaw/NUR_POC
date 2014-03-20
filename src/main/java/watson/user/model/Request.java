@@ -7,7 +7,7 @@ import java.util.Date;
 import java.util.UUID;
 
 @Entity
-@Table(name = "USER_REG_REQUEST")
+@Table(name = "REQUEST")
 public class Request {
     private String requestID;
     private String domainUserName;
@@ -28,6 +28,7 @@ public class Request {
     private String regionalRepProceed;
     private Date regionalRepProceedDate;
     private String regionalRepComments;
+    private String finalResult;
 
     public Request(String domainUserName, String instance, String comments) {
         this.requestID = UUID.randomUUID().toString();
@@ -188,5 +189,13 @@ public class Request {
 
     public void setRegionalRepComments(String regionalRepComments) {
         this.regionalRepComments = regionalRepComments;
+    }
+
+    public String getFinalResult() {
+        return finalResult;
+    }
+
+    public void setFinalResult(String finalResult) {
+        this.finalResult = finalResult;
     }
 }

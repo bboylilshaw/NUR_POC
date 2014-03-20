@@ -1,6 +1,7 @@
 package watson.user.service;
 
 import org.springframework.stereotype.Service;
+import watson.user.commons.RequestStatus;
 import watson.user.dao.RequestDaoImpl;
 import watson.user.model.Request;
 
@@ -11,17 +12,27 @@ public class ManagerServiceImpl implements ManagerService {
 
     private RequestDaoImpl requestDao;
 
+    @Resource
+    public void setRequestDao(RequestDaoImpl requestDao) {
+        this.requestDao = requestDao;
+    }
+
     @Override
     public Request reviewRequest(String requestID) {
-        return requestDao.getRequestByID(requestID);
+        Request request = requestDao.getRequestByID(requestID);
+        if (request.getManagerProceed().equalsIgnoreCase(RequestStatus.INITIAL)) {
+            return request;
+        }
+        return null;
     }
 
     @Override
     public void approveRequest(String requestID, String managerEmail, String comments) {
         Request request = reviewRequest(requestID);
         //if the request is still "IN" status, then proceed
-        if (request.getManagerProceed().equalsIgnoreCase("IN")) {
-            requestDao.proceedByManager(requestID, managerEmail, "AP", comments);
+        if (request.getManagerProceed().equalsIgnoreCase(RequestStatus.INITIAL)) {
+            requestDao.proceedByManager(requestID, managerEmail, RequestStatus.APPROVED, comments);
+            // if requester is in same domain, then pass to country rep, if not, skip country rep and pass to regional rep
             if (request.getDomainUserName().startsWith("AISAPACIFIC") && request.getInstance().equalsIgnoreCase("apwatson")
                     || request.getDomainUserName().startsWith("EMEA") && request.getInstance().equalsIgnoreCase("eubwatson")
                     || request.getDomainUserName().startsWith("EMEA") && request.getInstance().equalsIgnoreCase("euwatson")
@@ -42,7 +53,11 @@ public class ManagerServiceImpl implements ManagerService {
 
     @Override
     public void denyRequest(String requestID, String managerEmail, String comments) {
-        requestDao.proceedByManager(requestID, managerEmail, "DE", comments);
+        Request request = reviewRequest(requestID);
+        //if the request is still "IN" status, then proceed
+        if (request.getManagerProceed().equalsIgnoreCase(RequestStatus.INITIAL)) {
+            requestDao.proceedByManager(requestID, managerEmail, RequestStatus.DENIED, comments);
+        }
     }
 
     @Override
@@ -55,8 +70,4 @@ public class ManagerServiceImpl implements ManagerService {
 
     }
 
-    @Resource
-    public void setRequestDao(RequestDaoImpl requestDao) {
-        this.requestDao = requestDao;
-    }
 }

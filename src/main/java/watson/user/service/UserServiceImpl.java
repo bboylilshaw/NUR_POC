@@ -1,37 +1,51 @@
 package watson.user.service;
 
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Service;
-import watson.user.commons.UserValidator;
-import watson.user.dao.UserDao;
+import org.springframework.transaction.annotation.Transactional;
+import watson.user.dao.RequestDaoImpl;
+import watson.user.dao.UserDaoImpl;
 
 import javax.annotation.Resource;
 
-@Service
+@Service("userService")
 public class UserServiceImpl implements UserService {
 
-    private UserDao userDaoImpl;
+    private UserDaoImpl userDao;
+    private RequestDaoImpl requestDao;
+
+    @Resource
+    public void setUserDao(UserDaoImpl userDao) {
+        this.userDao = userDao;
+    }
+
+    @Resource
+    public void setRequestDao(RequestDaoImpl requestDao) {
+        this.requestDao = requestDao;
+    }
 
     @Override
+    @Transactional
     public void requestAccess(String domainUserName, String instance, String comments) {
         //check if user already have the access to the instance
-        boolean userExists = UserValidator.checkUserExists(domainUserName, instance);
-        //TODO check if pending approval
-        //boolean pendingApproval = UserValidator.checkIfPendingApproval(domainUserName, instance);
-        boolean pendingApproval = false;
+        boolean userExists = userDao.userExists(domainUserName, instance);
+        boolean allowToSubmit = requestDao.allowToSubmit(domainUserName, instance);
 
-        //if user doesn't exist and hasn't submit the request before, then allow to submit the request
-        if (!userExists && !pendingApproval) {
-            userDaoImpl.submitRequest(domainUserName, instance, comments);
-            String managerEmail = userDaoImpl.getManager(domainUserName);
-            //TODO notification.send(managerEmail);
-        } else {//throw an error that user already have the access, no need to re-submit
-            throw new RuntimeException("User already have the access");
+        //if user doesn't exist and allow to submit the request
+        if (!userExists && allowToSubmit) {
+            userDao.submitRequest(domainUserName, instance, comments);
+            //TODO get manager info and send notifications
+        } else {//throw an error that user is not eligible to submit request
+            throw new RuntimeException("User already have the access or request is WIP/Approved");
         }
 
     }
 
-    @Resource
-    public void setUserDaoImpl(UserDao userDaoImpl) {
-        this.userDaoImpl = userDaoImpl;
+    public static void main(String[] args) {
+        ApplicationContext applicationContext = new ClassPathXmlApplicationContext("application.xml");
+        UserService userService = applicationContext.getBean("userService", UserServiceImpl.class);
+        userService.requestAccess("asiapacific\\xiaoyao", "apwatson", "need access to Watson");
     }
+
 }
