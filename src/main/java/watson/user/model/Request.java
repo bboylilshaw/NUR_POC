@@ -30,6 +30,9 @@ public class Request {
     private String regionalRepComments;
     private String finalResult;
 
+    public Request() {
+    }
+
     public Request(String domainUserName, String instance, String comments) {
         this.requestID = UUID.randomUUID().toString();
         this.requestDate = new Date();

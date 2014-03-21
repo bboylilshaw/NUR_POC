@@ -39,4 +39,4 @@ CREATE TABLE IF NOT EXISTS REQUEST (
   RegionalRepProceedDate DATETIME,
   RegionalRepComments    VARCHAR(100),
   FinalResult            VARCHAR(4)
-)
+);
