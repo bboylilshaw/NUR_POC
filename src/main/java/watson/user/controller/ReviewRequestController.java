@@ -20,11 +20,12 @@ public class ReviewRequestController {
     @RequestMapping(value = "/manager/review/request/{requestId}", method = RequestMethod.GET)
     public String reviewRequestByManager(@PathVariable String requestId, ModelMap model) {
         Request request = managerService.reviewRequest(requestId);
+        model.addAttribute("requestId", requestId);
         model.addAttribute("domainUserName", request.getDomainUserName());
         model.addAttribute("email", request.getEmployeeEmail());
         model.addAttribute("instance", request.getInstance());
         model.addAttribute("comments", request.getComments());
-        model.addAttribute("date", request.getRequestDate());
+        model.addAttribute("date", request.getRequestDate().toString());
         return "reviewRequest";
     }
 

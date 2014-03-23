@@ -14,7 +14,7 @@ public class ManagerServiceImpl implements ManagerService {
     private RequestDaoImpl requestDao;
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public Request reviewRequest(String requestID) {
         Request request = requestDao.getRequestByID(requestID);
         if (request.getManagerProceed().equalsIgnoreCase(RequestStatus.INITIAL)) {
