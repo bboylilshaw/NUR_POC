@@ -4,7 +4,7 @@
     <title>NUR</title>
 </head>
 <body>
-    <form action="/NUR_POC/manager/proceed/${requestId}" method="post">
+    <form action="${pageContext.request.contextPath}/manager/proceed/${requestId}" method="post">
         Requester's information:
         <table>
             <tr>

@@ -4,6 +4,7 @@ import org.apache.velocity.app.VelocityEngine;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.velocity.VelocityEngineUtils;
 
@@ -19,6 +20,7 @@ public class NotificationServiceImpl implements NotificationService {
     private VelocityEngine velocityEngine;
 
     @Override
+    @Async
     public void sendEmailWithTemplate(String to, String cc, String templateName, Map model) throws Exception{
 
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();

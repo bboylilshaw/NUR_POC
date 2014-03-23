@@ -6,7 +6,7 @@
 <body>
 <h1>NUR</h1>
 
-<form action="access/request" method="post">
+<form action="${pageContext.request.contextPath}/access/request" method="post">
     <select name="instance">
         <option value="apwatson">AP Watson</option>
         <option value="eubwatson">EUB Watson</option>
