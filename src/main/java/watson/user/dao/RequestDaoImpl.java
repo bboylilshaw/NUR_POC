@@ -19,11 +19,6 @@ public class RequestDaoImpl implements RequestDao {
     private final Logger logger = Logger.getLogger(RequestDaoImpl.class);
     private SessionFactory sessionFactory;
 
-    @Resource
-    public void setSessionFactory(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
-    }
-
     @Override
     public Request getRequestByID(String requestID) {
         return (Request) sessionFactory.getCurrentSession().get(Request.class, requestID);
@@ -107,6 +102,11 @@ public class RequestDaoImpl implements RequestDao {
         } else {
             throw new RuntimeException("cannot define expired in which level");
         }
+    }
+
+    @Resource
+    public void setSessionFactory(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
     }
 
 }

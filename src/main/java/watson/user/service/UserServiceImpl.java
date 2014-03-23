@@ -8,12 +8,38 @@ import watson.user.dao.RequestDaoImpl;
 import watson.user.dao.UserDaoImpl;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
 
 @Service("userService")
 public class UserServiceImpl implements UserService {
 
     private UserDaoImpl userDao;
     private RequestDaoImpl requestDao;
+    private NotificationServiceImpl notificationService;
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void requestAccess(String domainUserName, String instance, String comments) throws Exception {
+        //check if user already have the access to the instance
+        boolean userExists = userDao.userExists(domainUserName, instance);
+        boolean allowToSubmit = requestDao.allowToSubmit(domainUserName, instance);
+
+        //if user doesn't exist and allow to submit the request
+        if (!userExists && allowToSubmit) {
+            String requestId = userDao.submitRequest(domainUserName, instance, comments);
+            //TODO get manager info and send notifications
+            String toManagerEmail = userDao.getManagerEmail(domainUserName);
+            String ccEmail = userDao.getEmail(domainUserName);
+            String templateName = "EmailTemplates/UserRegInitialNotificationTemplate.vm";
+            HashMap<String, String> model = new HashMap<String, String>();
+            model.put("approver", "Approver");
+            model.put("url", "http://localhost:8080/NUR_POC/manager/review/request/" + requestId);
+            notificationService.sendEmailWithTemplate(toManagerEmail, ccEmail, templateName, model);
+        } else {//throw an error that user is not eligible to submit request
+            throw new Exception("User already have the access to " + instance + ", or request is WIP/Approved");
+        }
+
+    }
 
     @Resource
     public void setUserDao(UserDaoImpl userDao) {
@@ -25,27 +51,19 @@ public class UserServiceImpl implements UserService {
         this.requestDao = requestDao;
     }
 
-    @Override
-    @Transactional
-    public void requestAccess(String domainUserName, String instance, String comments) {
-        //check if user already have the access to the instance
-        boolean userExists = userDao.userExists(domainUserName, instance);
-        boolean allowToSubmit = requestDao.allowToSubmit(domainUserName, instance);
-
-        //if user doesn't exist and allow to submit the request
-        if (!userExists && allowToSubmit) {
-            userDao.submitRequest(domainUserName, instance, comments);
-            //TODO get manager info and send notifications
-        } else {//throw an error that user is not eligible to submit request
-            throw new RuntimeException("User already have the access or request is WIP/Approved");
-        }
-
+    @Resource
+    public void setNotificationService(NotificationServiceImpl notificationService) {
+        this.notificationService = notificationService;
     }
 
     public static void main(String[] args) {
-        ApplicationContext applicationContext = new ClassPathXmlApplicationContext("application.xml");
+        ApplicationContext applicationContext = new ClassPathXmlApplicationContext("applicationContext.xml");
         UserService userService = applicationContext.getBean("userService", UserServiceImpl.class);
-        userService.requestAccess("asiapacific\\xiaoyao", "apwatson", "need access to Watson");
+        try {
+            userService.requestAccess("asiapacific\\xiaoyao", "apwatson", "need access to Watson");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

@@ -20,6 +20,7 @@
             <list>
                 <value>classpath*:dataSource.properties</value>
                 <value>classpath*:hibernate.properties</value>
+                <value>classpath*:mail.properties</value>
             </list>
         </property>
     </bean>
@@ -66,5 +67,8 @@
     <bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
+
+    <!-- Import other beans.xml files  -->
+    <import resource="notificationServiceBeans.xml" />
 
 </beans>

@@ -1,6 +1,7 @@
 package watson.user.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import watson.user.commons.RequestStatus;
 import watson.user.dao.RequestDaoImpl;
 import watson.user.model.Request;
@@ -12,12 +13,8 @@ public class ManagerServiceImpl implements ManagerService {
 
     private RequestDaoImpl requestDao;
 
-    @Resource
-    public void setRequestDao(RequestDaoImpl requestDao) {
-        this.requestDao = requestDao;
-    }
-
     @Override
+    @Transactional
     public Request reviewRequest(String requestID) {
         Request request = requestDao.getRequestByID(requestID);
         if (request.getManagerProceed().equalsIgnoreCase(RequestStatus.INITIAL)) {
@@ -27,6 +24,7 @@ public class ManagerServiceImpl implements ManagerService {
     }
 
     @Override
+    @Transactional
     public void approveRequest(String requestID, String managerEmail, String comments) {
         Request request = reviewRequest(requestID);
         //if the request is still "IN" status, then proceed
@@ -52,6 +50,7 @@ public class ManagerServiceImpl implements ManagerService {
     }
 
     @Override
+    @Transactional
     public void denyRequest(String requestID, String managerEmail, String comments) {
         Request request = reviewRequest(requestID);
         //if the request is still "IN" status, then proceed
@@ -68,6 +67,11 @@ public class ManagerServiceImpl implements ManagerService {
     @Override
     public void passToRegionalRep(String requestID) {
 
+    }
+
+    @Resource
+    public void setRequestDao(RequestDaoImpl requestDao) {
+        this.requestDao = requestDao;
     }
 
 }

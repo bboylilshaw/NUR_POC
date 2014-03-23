@@ -12,17 +12,11 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
-//@Component("userDao")
 @Repository("userDao")
 public class UserDaoImpl implements UserDao {
 
     private final Logger logger = Logger.getLogger(UserDaoImpl.class);
     private SessionFactory sessionFactory;
-
-    @Resource
-    public void setSessionFactory(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
-    }
 
     @Override
     public HPUser getHPUserByDomainUserName(String domainUserName, String instance) {
@@ -55,9 +49,20 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public String getManager(String domainUserName) {
-        //fake manager info
+    public String getManagerEmail(String domainUserName) {
+        //FIXME: fake manager email, should use LDAP service to obtain
         return "xiaoyao8823@gmail.com";
+    }
+
+    @Override
+    public String getEmail(String domainUserName) {
+        //FIXME: fake email, should use LDAP service to obtain
+        return "xiaoyao8823@gmail.com";
+    }
+
+    @Resource
+    public void setSessionFactory(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
     }
 
 }

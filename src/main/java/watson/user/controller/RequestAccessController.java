@@ -14,22 +14,25 @@ public class RequestAccessController {
 
     private UserServiceImpl userService;
 
-    @Resource
-    public void setUserService(UserServiceImpl userService) {
-        this.userService = userService;
-    }
-
     @RequestMapping(value = "/access/request", method = RequestMethod.POST)
-    public
-    @ResponseBody
-    String requestAccess(HttpServletRequest request) {
+    public @ResponseBody String requestAccess(HttpServletRequest request) {
 
         String domainUserName = request.getParameter("domainUserName");
         String instance = request.getParameter("instance");
         String comments = request.getParameter("comments");
 
-        userService.requestAccess(domainUserName, instance, comments);
-        return "request submitted!";
+        try {
+            userService.requestAccess(domainUserName, instance, comments);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Fail to submit request!\n" + e.getMessage();
+        }
+        return "request submitted successfully!";
+    }
+
+    @Resource
+    public void setUserService(UserServiceImpl userService) {
+        this.userService = userService;
     }
 
 }

@@ -9,11 +9,6 @@ public class CountryRepServiceImpl implements CountryRepService {
 
     private RequestDaoImpl requestDao;
 
-    @Resource
-    public void setRequestDao(RequestDaoImpl requestDao) {
-        this.requestDao = requestDao;
-    }
-
     @Override
     public Request reviewRequest(String requestID) {
         Request request = requestDao.getRequestByID(requestID);
@@ -47,6 +42,12 @@ public class CountryRepServiceImpl implements CountryRepService {
     @Override
     public void passToRegionalRep(String requestID) {
 
+    }
+
+
+    @Resource
+    public void setRequestDao(RequestDaoImpl requestDao) {
+        this.requestDao = requestDao;
     }
 
 }

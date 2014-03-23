@@ -9,11 +9,6 @@ public class RegionalRepServiceImpl implements RegionalRepService {
 
     private RequestDaoImpl requestDao;
 
-    @Resource
-    public void setRequestDao(RequestDaoImpl requestDao) {
-        this.requestDao = requestDao;
-    }
-
     @Override
     public Request reviewRequest(String requestID) {
         Request request = requestDao.getRequestByID(requestID);
@@ -31,5 +26,10 @@ public class RegionalRepServiceImpl implements RegionalRepService {
     @Override
     public void denyRequest(String requestID, String regionalRepEmail, String comments) {
 
+    }
+
+    @Resource
+    public void setRequestDao(RequestDaoImpl requestDao) {
+        this.requestDao = requestDao;
     }
 }

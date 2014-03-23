@@ -9,5 +9,7 @@ public interface UserDao {
 
     public boolean userExists(String domainUserName, String instance);
 
-    public String getManager(String domainUserName);
+    public String getManagerEmail(String domainUserName);
+
+    public String getEmail(String domainUserName);
 }
