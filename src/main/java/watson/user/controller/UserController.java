@@ -25,8 +25,8 @@ public class UserController {
         String domainUserName = req.getParameter("domainUserName");
         req.getSession().setAttribute("domainUserName", domainUserName);
         modelMap.addAttribute("domainUserName", domainUserName);
-        //modelMap.addAttribute("openRequests", userService.listMyOpenRequests(domainUserName));
-        //modelMap.addAttribute("pendingApprovalRequests", userService.listRequestsPendingMyApproval(domainUserName));
+        modelMap.addAttribute("openAccessRequests", userService.listOpenAccessRequests(domainUserName));
+        modelMap.addAttribute("accessRequestsAwaitingApproval", userService.listAccessRequestsAwaitingApproval(domainUserName));
         return "home";
     }
 

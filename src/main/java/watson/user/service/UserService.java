@@ -9,11 +9,11 @@ public interface UserService {
 
     public void requestAccess(String domainUserName, String instance, String comments) throws Exception;
 
-    public List<Request> listMyAccess(String domainUserName);
+    public List<Request> listCurrentAccess(String domainUserName);
 
-    public List<Request> listMyOpenRequests(String domainUserName);
+    public List<Request> listOpenAccessRequests(String domainUserName);
 
-    public List<Request> listRequestsPendingMyApproval(String domainUserName);
+    public List<Request> listAccessRequestsAwaitingApproval(String domainUserName);
 
     public HPEmployee getEmployeeData(String domainUserName);
 }

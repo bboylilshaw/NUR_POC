@@ -101,7 +101,7 @@ public class RequestDaoImpl implements RequestDao {
     }
 
     @Override
-    public List<Request> listMyOpenRequests(String domainUserName) {
+    public List<Request> listOpenAccessRequests(String domainUserName) {
         String hql = "from Request as r where r.domainUserName=:domainUserName and r.finalResult=:wip";
         Query query = sessionFactory.getCurrentSession().createQuery(hql);
         return query.setString("domainUserName", domainUserName)
@@ -110,10 +110,10 @@ public class RequestDaoImpl implements RequestDao {
     }
 
     @Override
-    public List<Request> listRequestsPendingMyApproval(String domainUserName) {
-        String hql = "from Request as r where (r.managerDomainUserName=:domainUserName and r.managerProceedAction=:in)"
-                                       + " or (r.countryRepDomainUserName=:domainUserName and r.countryRepProceedAction=:in)"
-                                       + " or (r.regionalRepDomainUserName=:domainUserName and r.regionalRepProceedAction=:in)";
+    public List<Request> listAccessRequestsAwaitingApproval(String domainUserName) {
+        String hql = "from Request as r where (r.managerDomainUserName=:domainUserName and r.managerProceed=:in)"
+                                       + " or (r.countryRepDomainUserName=:domainUserName and r.countryRepProceed=:in)"
+                                       + " or (r.regionalRepDomainUserName=:domainUserName and r.regionalRepProceed=:in)";
         Query query = sessionFactory.getCurrentSession().createQuery(hql);
         return query.setString("domainUserName", domainUserName)
                     .setString("in", RequestStatus.INITIAL)

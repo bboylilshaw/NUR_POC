@@ -44,19 +44,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<Request> listMyAccess(String domainUserName) {
+    @Transactional
+    public List<Request> listCurrentAccess(String domainUserName) {
         //TODO need to check HPUser for current status
         return null;
     }
 
     @Override
-    public List<Request> listMyOpenRequests(String domainUserName) {
-        return requestDao.listMyOpenRequests(domainUserName);
+    @Transactional
+    public List<Request> listOpenAccessRequests(String domainUserName) {
+        return requestDao.listOpenAccessRequests(domainUserName);
     }
 
     @Override
-    public List<Request> listRequestsPendingMyApproval(String domainUserName) {
-        return requestDao.listRequestsPendingMyApproval(domainUserName);
+    @Transactional
+    public List<Request> listAccessRequestsAwaitingApproval(String domainUserName) {
+        return requestDao.listAccessRequestsAwaitingApproval(domainUserName);
     }
 
     @Override

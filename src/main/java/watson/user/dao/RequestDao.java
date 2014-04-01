@@ -18,10 +18,8 @@ public interface RequestDao {
 
     public void setRequestExpired(String requestID, String expiredLevel);
 
-    //public List<Request> listApprovedRequests(String domainUserName);
+    public List<Request> listOpenAccessRequests(String domainUserName);
 
-    public List<Request> listMyOpenRequests(String domainUserName);
-
-    public List<Request> listRequestsPendingMyApproval(String domainUserName);
+    public List<Request> listAccessRequestsAwaitingApproval(String domainUserName);
 
 }

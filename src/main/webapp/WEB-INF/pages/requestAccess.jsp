@@ -1,13 +1,13 @@
 <html>
 <head>
-    <title>NUR</title>
-    <base href="${pageContext.request.scheme}://${pageContext.request.serverName}:${pageContext.request.serverPort}${pageContext.request.contextPath}/">
-    <link rel="stylesheet" href="resources/css/bootstrap.min.css"/>
+    <%@ include file="header.jsp"%>
+    <title>NUR - Request Access</title>
 </head>
 <body>
 <h1>NUR - Request Access</h1>
 
 <form action="access/request" method="post">
+    Instances:
     <select name="instance">
         <option value="apwatson">AP Watson</option>
         <option value="eubwatson">EUB Watson</option>

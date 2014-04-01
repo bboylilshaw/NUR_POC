@@ -1,8 +1,7 @@
 <html>
 <head>
+    <%@ include file="header.jsp"%>
     <title>NUR</title>
-    <base href="${pageContext.request.scheme}://${pageContext.request.serverName}:${pageContext.request.serverPort}${pageContext.request.contextPath}/">
-    <link rel="stylesheet" href="resources/css/bootstrap.min.css"/>
 </head>
 <body>
     <h1>${error}</h1><br/>

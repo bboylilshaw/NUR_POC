@@ -1,8 +1,7 @@
 <html>
 <head>
-    <title>NUR</title>
-    <base href="${pageContext.request.scheme}://${pageContext.request.serverName}:${pageContext.request.serverPort}${pageContext.request.contextPath}/">
-    <link rel="stylesheet" href="resources/css/bootstrap.min.css"/>
+    <%@ include file="header.jsp"%>
+    <title>NUR - Home</title>
 </head>
 <body>
 
@@ -25,6 +24,7 @@
             <td>Status</td>
             <td>Last Access Date</td>
         </tr>
+
         <tr>
             <td colspan="3">Your open access requests</td>
         </tr>
@@ -33,6 +33,14 @@
             <td>Status</td>
             <td>Request Date</td>
         </tr>
+        <c:forEach var="openRequest" items="${openAccessRequests}">
+            <tr>
+                <td>${openRequest.getInstance()}</td>
+                <td>${openRequest.getFinalResult()}</td>
+                <td>${openRequest.getRequestDate()}</td>
+            </tr>
+        </c:forEach>
+
         <tr>
             <td colspan="3">Access requests awaiting your approval</td>
         </tr>
