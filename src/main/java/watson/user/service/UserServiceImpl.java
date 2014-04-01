@@ -1,14 +1,15 @@
 package watson.user.service;
 
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import watson.user.dao.RequestDaoImpl;
 import watson.user.dao.UserDaoImpl;
+import watson.user.model.HPEmployee;
+import watson.user.model.Request;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
+import java.util.List;
 
 @Service("userService")
 public class UserServiceImpl implements UserService {
@@ -26,10 +27,11 @@ public class UserServiceImpl implements UserService {
 
         //if user doesn't exist and allow to submit the request
         if (!userExists && allowToSubmit) {
-            String requestId = userDao.submitRequest(domainUserName, instance, comments);
+            HPEmployee hpEmployee = this.getEmployeeData(domainUserName);
+            String requestId = userDao.submitRequest(hpEmployee, instance, comments);
             //TODO get manager info and send notifications
-            String toManagerEmail = userDao.getManagerEmail(domainUserName);
-            String ccEmail = userDao.getEmail(domainUserName);
+            String toManagerEmail = hpEmployee.getManagerEmail();
+            String ccEmail = hpEmployee.getEmail();
             String templateName = "EmailTemplates/UserRegInitialNotificationTemplate.vm";
             HashMap<String, String> model = new HashMap<String, String>();
             model.put("approver", "Approver");
@@ -39,6 +41,38 @@ public class UserServiceImpl implements UserService {
             throw new Exception("User already have the access to " + instance + ", or request is WIP/Approved");
         }
 
+    }
+
+    @Override
+    public List<Request> listMyAccess(String domainUserName) {
+        //TODO need to check HPUser for current status
+        return null;
+    }
+
+    @Override
+    public List<Request> listMyOpenRequests(String domainUserName) {
+        return requestDao.listMyOpenRequests(domainUserName);
+    }
+
+    @Override
+    public List<Request> listRequestsPendingMyApproval(String domainUserName) {
+        return requestDao.listRequestsPendingMyApproval(domainUserName);
+    }
+
+    @Override
+    public HPEmployee getEmployeeData(String domainUserName) {
+        HPEmployee hpEmployee = new HPEmployee();
+        hpEmployee.setDomainUserName("ASIAPACIFIC\\xiaoyao");
+        hpEmployee.setEmployeeId("21888145");
+        hpEmployee.setEmail("yao.xiao@hp.com");
+        hpEmployee.setName("Yao Xiao");
+        hpEmployee.setFirstName("Yao");
+        hpEmployee.setLastName("Xiao");
+        hpEmployee.setManagerDomainUserName("WW\\xiaoyao");
+        hpEmployee.setManagerEmail("xiaoyao8823@gmail.com");
+        hpEmployee.setManagerEmployeeId("12345678");
+
+        return hpEmployee;
     }
 
     @Resource
@@ -54,16 +88,6 @@ public class UserServiceImpl implements UserService {
     @Resource
     public void setNotificationService(NotificationServiceImpl notificationService) {
         this.notificationService = notificationService;
-    }
-
-    public static void main(String[] args) {
-        ApplicationContext applicationContext = new ClassPathXmlApplicationContext("applicationContext.xml");
-        UserService userService = applicationContext.getBean("userService", UserServiceImpl.class);
-        try {
-            userService.requestAccess("asiapacific\\xiaoyao", "apwatson", "need access to Watson");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
 }

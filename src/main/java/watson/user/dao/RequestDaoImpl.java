@@ -9,7 +9,6 @@ import watson.user.commons.RequestStatus;
 import watson.user.model.Request;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -70,18 +69,15 @@ public class RequestDaoImpl implements RequestDao {
 
     @Override
     public boolean allowToSubmit(String domainUserName, String instance) {
-        Request request = null;
         String hql = "from Request as r where r.domainUserName=:domainUserName and r.instance=:instance and (r.finalResult=:wip or r.finalResult=:ap)";
         Query query = sessionFactory.getCurrentSession().createQuery(hql);
-        List<Request> results = (ArrayList<Request>) query.setString("domainUserName", domainUserName)
-                .setString("instance", instance)
-                .setString("wip", RequestStatus.WIP)
-                .setString("ap", RequestStatus.APPROVED)
-                .list();
-        if (results.size() > 0) {
-            return false;
-        }
-        return true;
+        List<Request> results = query.setString("domainUserName", domainUserName)
+                                     .setString("instance", instance)
+                                     .setString("wip", RequestStatus.WIP)
+                                     .setString("ap", RequestStatus.APPROVED)
+                                     .list();
+        //if no requests being found, then allow to submit
+        return results.size() <= 0;
     }
 
     @Override
@@ -102,6 +98,26 @@ public class RequestDaoImpl implements RequestDao {
         } else {
             throw new RuntimeException("cannot define expired in which level");
         }
+    }
+
+    @Override
+    public List<Request> listMyOpenRequests(String domainUserName) {
+        String hql = "from Request as r where r.domainUserName=:domainUserName and r.finalResult=:wip";
+        Query query = sessionFactory.getCurrentSession().createQuery(hql);
+        return query.setString("domainUserName", domainUserName)
+                    .setString("wip", RequestStatus.WIP)
+                    .list();
+    }
+
+    @Override
+    public List<Request> listRequestsPendingMyApproval(String domainUserName) {
+        String hql = "from Request as r where (r.managerDomainUserName=:domainUserName and r.managerProceedAction=:in)"
+                                       + " or (r.countryRepDomainUserName=:domainUserName and r.countryRepProceedAction=:in)"
+                                       + " or (r.regionalRepDomainUserName=:domainUserName and r.regionalRepProceedAction=:in)";
+        Query query = sessionFactory.getCurrentSession().createQuery(hql);
+        return query.setString("domainUserName", domainUserName)
+                    .setString("in", RequestStatus.INITIAL)
+                    .list();
     }
 
     @Resource

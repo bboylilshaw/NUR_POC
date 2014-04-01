@@ -9,11 +9,11 @@
                            http://www.springframework.org/schema/mvc
                            http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
-    <!--<context:annotation-config />-->
-    <context:component-scan base-package="watson.user.controller"/>
-    <mvc:annotation-driven/>
-    <!--<mvc:resources mapping="/resources/**" location="/resources/" />-->
-    <!--<mvc:default-servlet-handler />-->
+    <context:annotation-config />
+    <context:component-scan base-package="watson.user.controller" />
+    <mvc:annotation-driven />
+    <mvc:resources mapping="/resources/**" location="WEB-INF/resources/" />
+    <mvc:default-servlet-handler />
 
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="prefix" value="/WEB-INF/pages/"/>

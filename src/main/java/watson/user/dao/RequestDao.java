@@ -2,6 +2,8 @@ package watson.user.dao;
 
 import watson.user.model.Request;
 
+import java.util.List;
+
 public interface RequestDao {
 
     public Request getRequestByID(String requestID);
@@ -15,5 +17,11 @@ public interface RequestDao {
     public boolean allowToSubmit(String domainUserName, String instance);
 
     public void setRequestExpired(String requestID, String expiredLevel);
+
+    //public List<Request> listApprovedRequests(String domainUserName);
+
+    public List<Request> listMyOpenRequests(String domainUserName);
+
+    public List<Request> listRequestsPendingMyApproval(String domainUserName);
 
 }

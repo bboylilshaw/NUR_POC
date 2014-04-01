@@ -17,7 +17,7 @@ public class ManagerServiceImpl implements ManagerService {
     @Transactional(readOnly = true)
     public Request reviewRequest(String requestID) {
         Request request = requestDao.getRequestByID(requestID);
-        if (request.getManagerProceed().equalsIgnoreCase(RequestStatus.INITIAL)) {
+        if (request != null && request.getManagerProceed().equalsIgnoreCase(RequestStatus.INITIAL)) {
             return request;
         }
         return null;

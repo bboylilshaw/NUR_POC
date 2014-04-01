@@ -16,14 +16,17 @@ public class Request {
     private String employeeEmail;
     private Date requestDate;
     private String comments;
+    private String managerDomainUserName;
     private String managerEmail;
     private String managerProceed;
     private Date managerProceedDate;
     private String managerComments;
+    private String countryRepDomainUserName;
     private String countryRepEmail;
     private String countryRepProceed;
     private Date countryRepProceedDate;
     private String countryRepComments;
+    private String regionalRepDomainUserName;
     private String regionalRepEmail;
     private String regionalRepProceed;
     private Date regionalRepProceedDate;
@@ -98,6 +101,14 @@ public class Request {
         this.comments = comments;
     }
 
+    public String getManagerDomainUserName() {
+        return managerDomainUserName;
+    }
+
+    public void setManagerDomainUserName(String managerDomainUserName) {
+        this.managerDomainUserName = managerDomainUserName;
+    }
+
     public String getManagerEmail() {
         return managerEmail;
     }
@@ -130,6 +141,14 @@ public class Request {
         this.managerComments = managerComments;
     }
 
+    public String getCountryRepDomainUserName() {
+        return countryRepDomainUserName;
+    }
+
+    public void setCountryRepDomainUserName(String countryRepDomainUserName) {
+        this.countryRepDomainUserName = countryRepDomainUserName;
+    }
+
     public String getCountryRepEmail() {
         return countryRepEmail;
     }
@@ -160,6 +179,14 @@ public class Request {
 
     public void setCountryRepComments(String countryRepComments) {
         this.countryRepComments = countryRepComments;
+    }
+
+    public String getRegionalRepDomainUserName() {
+        return regionalRepDomainUserName;
+    }
+
+    public void setRegionalRepDomainUserName(String regionalRepDomainUserName) {
+        this.regionalRepDomainUserName = regionalRepDomainUserName;
     }
 
     public String getRegionalRepEmail() {

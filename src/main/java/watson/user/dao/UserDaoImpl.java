@@ -5,6 +5,7 @@ import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 import watson.user.commons.RequestStatus;
+import watson.user.model.HPEmployee;
 import watson.user.model.HPUser;
 import watson.user.model.Request;
 
@@ -23,8 +24,8 @@ public class UserDaoImpl implements UserDao {
         HPUser hpUser = null;
         Query query = sessionFactory.getCurrentSession().createQuery("from HPUser as u where u.domainUserName=:domainUserName and u.instance=:instance");
         List<HPUser> results = (ArrayList<HPUser>) query.setString("domainUserName", domainUserName)
-                .setString("instance", instance)
-                .list();
+                                                        .setString("instance", instance)
+                                                        .list();
         if (results.size() > 0) {
             hpUser = results.get(0);
         }
@@ -32,8 +33,10 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public String submitRequest(String domainUserName, String instance, String comments) {
-        Request request = new Request(domainUserName, instance, comments);
+    public String submitRequest(HPEmployee hpEmployee, String instance, String comments) {
+        Request request = new Request(hpEmployee.getDomainUserName(), instance, comments);
+        request.setManagerDomainUserName(hpEmployee.getManagerDomainUserName());
+        request.setManagerEmail(hpEmployee.getManagerEmail());
         request.setManagerProceed(RequestStatus.INITIAL);
         request.setFinalResult(RequestStatus.WIP);
         sessionFactory.getCurrentSession().save(request);
@@ -46,18 +49,6 @@ public class UserDaoImpl implements UserDao {
             return true;
         }
         return false;
-    }
-
-    @Override
-    public String getManagerEmail(String domainUserName) {
-        //FIXME: fake manager email, should use LDAP service to obtain
-        return "xiaoyao8823@gmail.com";
-    }
-
-    @Override
-    public String getEmail(String domainUserName) {
-        //FIXME: fake email, should use LDAP service to obtain
-        return "xiaoyao8823@gmail.com";
     }
 
     @Resource
