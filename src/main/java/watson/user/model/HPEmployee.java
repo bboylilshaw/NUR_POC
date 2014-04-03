@@ -1,8 +1,6 @@
 package watson.user.model;
 
 public class HPEmployee {
-    //private static final char DOMAIN_USERNAME_SEPARATOR_CHAR    = '\\';
-    //private static final char DOMAIN_USERNAME_SEPARATOR_CHAR_ED = ':';
 
     protected String domainUserName;
     protected String employeeId;
@@ -19,8 +17,23 @@ public class HPEmployee {
     protected String managerName;
     protected String managerEmail;
 
-    protected String domainName;
-    protected String userName;
+    public HPEmployee(){}
+
+    public HPEmployee (String ntUserDomainId, String employeeNumber, String cn, String firstName, String lastName, String mail,
+                       String jobFunction, String country, String ou, String hpStatus, String mgrId)
+    {
+        this.domainUserName    = ntUserDomainId.replace(":", "\\");
+        this.employeeId        = employeeNumber;
+        this.name              = cn;
+        this.firstName 	       = firstName;
+        this.lastName 	       = lastName;
+        this.email             = mail;
+        this.jobFunction       = jobFunction;
+        this.country           = country;
+        this.orgUnit           = ou;
+        this.hpStatus          = hpStatus;
+        this.managerEmployeeId = mgrId;
+    }
 
     public String getDomainUserName() {
         return domainUserName;
@@ -134,19 +147,4 @@ public class HPEmployee {
         this.managerEmail = managerEmail;
     }
 
-    public String getDomainName() {
-        return domainName;
-    }
-
-    public void setDomainName(String domainName) {
-        this.domainName = domainName;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
 }

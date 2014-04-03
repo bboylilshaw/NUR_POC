@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="ldapService" class="watson.user.service.LDAPServiceImpl">
+        <property name="ldapURL" value="${ldap.url}"/>
+        <property name="ldapAccount" value="${ldap.account}"/>
+        <property name="ldapPassword" value="${ldap.password}"/>
+        <property name="initialContextFactory" value="${ldap.initialContextFactory}"/>
+        <property name="trustStore" value="${ldap.trustStore}"/>
+    </bean>
+
+</beans>

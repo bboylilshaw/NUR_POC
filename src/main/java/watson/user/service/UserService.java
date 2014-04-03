@@ -1,6 +1,5 @@
 package watson.user.service;
 
-import watson.user.model.HPEmployee;
 import watson.user.model.Request;
 
 import java.util.List;
@@ -15,5 +14,4 @@ public interface UserService {
 
     public List<Request> listAccessRequestsAwaitingApproval(String domainUserName);
 
-    public HPEmployee getEmployeeData(String domainUserName);
 }

@@ -4,6 +4,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import watson.user.model.HPEmployee;
+import watson.user.service.LDAPServiceImpl;
 import watson.user.service.UserServiceImpl;
 
 import javax.annotation.Resource;
@@ -13,21 +15,31 @@ import javax.servlet.http.HttpServletRequest;
 public class UserController {
 
     private UserServiceImpl userService;
+    private LDAPServiceImpl ldapService;
 
     @RequestMapping(value = "/home", method = RequestMethod.GET)
     public String userHome(HttpServletRequest req, ModelMap modelMap){
-        modelMap.addAttribute("domainUserName", req.getSession().getAttribute("domainUserName"));
+        HPEmployee hpEmployee = (HPEmployee) req.getSession().getAttribute("hpEmployee");
+        if (hpEmployee == null) {
+            return "redirect:/";
+        }
+        modelMap.addAttribute("domainUserName", hpEmployee.getDomainUserName());
+        modelMap.addAttribute("openAccessRequests", userService.listOpenAccessRequests(hpEmployee.getDomainUserName()));
+        modelMap.addAttribute("accessRequestsAwaitingApproval", userService.listAccessRequestsAwaitingApproval(hpEmployee.getDomainUserName()));
         return "home";
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public String doLogin(HttpServletRequest req, ModelMap modelMap) {
-        String domainUserName = req.getParameter("domainUserName");
-        req.getSession().setAttribute("domainUserName", domainUserName);
-        modelMap.addAttribute("domainUserName", domainUserName);
-        modelMap.addAttribute("openAccessRequests", userService.listOpenAccessRequests(domainUserName));
-        modelMap.addAttribute("accessRequestsAwaitingApproval", userService.listAccessRequestsAwaitingApproval(domainUserName));
-        return "home";
+    public String doLogin(HttpServletRequest req) {
+        String email = req.getParameter("email");
+        String password = req.getParameter("password");
+        if (ldapService.authenticateUser(email, password)) {
+            HPEmployee hpEmployee = ldapService.getEmployeeDataByEmail(email);
+            req.getSession().setAttribute("hpEmployee", hpEmployee);
+            return "redirect:/home";
+        }
+
+        return "redirect:/";
     }
 
     @RequestMapping(value = "/access/request", method = RequestMethod.GET)
@@ -37,7 +49,8 @@ public class UserController {
 
     @RequestMapping(value = "/access/request", method = RequestMethod.POST)
     public String doRequestAccess(HttpServletRequest req, ModelMap modelMap) {
-        String domainUserName = (String) req.getSession().getAttribute("domainUserName");
+        HPEmployee hpEmployee = (HPEmployee) req.getSession().getAttribute("hpEmployee");
+        String domainUserName = hpEmployee.getDomainUserName();
         String instance = req.getParameter("instance");
         String comments = req.getParameter("comments");
 
@@ -56,4 +69,8 @@ public class UserController {
         this.userService = userService;
     }
 
+    @Resource
+    public void setLdapService(LDAPServiceImpl ldapService) {
+        this.ldapService = ldapService;
+    }
 }

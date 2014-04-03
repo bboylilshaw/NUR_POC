@@ -28,7 +28,7 @@ public class ManagerController {
         modelMap.addAttribute("email", request.getEmployeeEmail());
         modelMap.addAttribute("instance", request.getInstance());
         modelMap.addAttribute("comments", request.getComments());
-        modelMap.addAttribute("date", request.getRequestDate().toString());
+        modelMap.addAttribute("date", request.getRequestDate());
         return "reviewRequest";
     }
 

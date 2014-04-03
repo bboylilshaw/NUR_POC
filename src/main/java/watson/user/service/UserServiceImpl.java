@@ -17,6 +17,7 @@ public class UserServiceImpl implements UserService {
     private UserDaoImpl userDao;
     private RequestDaoImpl requestDao;
     private NotificationServiceImpl notificationService;
+    private LDAPServiceImpl ldapService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -27,14 +28,14 @@ public class UserServiceImpl implements UserService {
 
         //if user doesn't exist and allow to submit the request
         if (!userExists && allowToSubmit) {
-            HPEmployee hpEmployee = this.getEmployeeData(domainUserName);
+            HPEmployee hpEmployee = ldapService.getEmployeeDataByDomainUserName(domainUserName);
             String requestId = userDao.submitRequest(hpEmployee, instance, comments);
             //TODO get manager info and send notifications
-            String toManagerEmail = hpEmployee.getManagerEmail();
+            String toManagerEmail = "yao.xiao@hp.com";
             String ccEmail = hpEmployee.getEmail();
             String templateName = "EmailTemplates/UserRegInitialNotificationTemplate.vm";
             HashMap<String, String> model = new HashMap<String, String>();
-            model.put("approver", "Approver");
+            model.put("approver", hpEmployee.getFirstName());
             model.put("url", "http://localhost:8080/NUR_POC/manager/review/request/" + requestId);
             notificationService.sendEmailWithTemplate(toManagerEmail, ccEmail, templateName, model);
         } else {//throw an error that user is not eligible to submit request
@@ -62,22 +63,6 @@ public class UserServiceImpl implements UserService {
         return requestDao.listAccessRequestsAwaitingApproval(domainUserName);
     }
 
-    @Override
-    public HPEmployee getEmployeeData(String domainUserName) {
-        HPEmployee hpEmployee = new HPEmployee();
-        hpEmployee.setDomainUserName("ASIAPACIFIC\\xiaoyao");
-        hpEmployee.setEmployeeId("21888145");
-        hpEmployee.setEmail("yao.xiao@hp.com");
-        hpEmployee.setName("Yao Xiao");
-        hpEmployee.setFirstName("Yao");
-        hpEmployee.setLastName("Xiao");
-        hpEmployee.setManagerDomainUserName("WW\\xiaoyao");
-        hpEmployee.setManagerEmail("xiaoyao8823@gmail.com");
-        hpEmployee.setManagerEmployeeId("12345678");
-
-        return hpEmployee;
-    }
-
     @Resource
     public void setUserDao(UserDaoImpl userDao) {
         this.userDao = userDao;
@@ -93,4 +78,8 @@ public class UserServiceImpl implements UserService {
         this.notificationService = notificationService;
     }
 
+    @Resource
+    public void setLdapService(LDAPServiceImpl ldapService) {
+        this.ldapService = ldapService;
+    }
 }

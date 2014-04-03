@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
     <%@ include file="header.jsp"%>
@@ -5,51 +6,65 @@
 </head>
 <body>
 
-    Welcome, ${domainUserName}! This is the Watson User Adminstration Page.
-    <br/><br/>
-    &gt;If you are a WATSON USER, you can use this page to view your current access status or you can request access to a particular regional Watson instance.
-    <br/>
-    &gt;If you are the MANAGER of a Watson User, you can view and approve access requests created by your employees.
-    <br/>
-    &gt;If you are a WATSON REGIONAL REP or a WATSON SUPERUSER (APJ region only), you will be able to review and approve access requests to the Watson instance corresponding to your geographical region.
-    <br/>
-    <br/>
-
-    <table>
-        <tr>
-            <td colspan="3">Your current access details</td>
-        </tr>
-        <tr>
-            <td>Watson Instance</td>
-            <td>Status</td>
-            <td>Last Access Date</td>
-        </tr>
-
-        <tr>
-            <td colspan="3">Your open access requests</td>
-        </tr>
-        <tr>
-            <td>Watson Instance</td>
-            <td>Status</td>
-            <td>Request Date</td>
-        </tr>
-        <c:forEach var="openRequest" items="${openAccessRequests}">
+    <p class="h2">Welcome, ${domainUserName}! This is the Watson User Adminstration Page.</p>
+    <hr/>
+    <div class="col-lg-6">
+        <h3 class="sub-header">Your current access details</h3>
+        <table class="table">
+            <thead>
             <tr>
-                <td>${openRequest.getInstance()}</td>
-                <td>${openRequest.getFinalResult()}</td>
-                <td>${openRequest.getRequestDate()}</td>
+                <th>Watson Instance</th>
+                <th>Status</th>
+                <th>Last Login Date</th>
             </tr>
-        </c:forEach>
+            </thead>
+            <tbody>
+            <tr>
+                <td>1,001</td>
+                <td>Lorem</td>
+                <td>ipsum</td>
+            </tr>
+            </tbody>
+        </table>
 
-        <tr>
-            <td colspan="3">Access requests awaiting your approval</td>
-        </tr>
-        <tr>
-            <td>Watson Instance</td>
-            <td>Status</td>
-            <td>Request Date</td>
-        </tr>
-    </table>
+        <h3 class="sub-header">Your open access requests</h3>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Watson Instance</th>
+                <th>Status</th>
+                <th>Request Date</th>
+            </tr>
+            </thead>
+            <tbody>
+            <c:forEach var="openRequest" items="${openAccessRequests}">
+                <tr>
+                <td>${openRequest.instance}</td>
+                <td>${openRequest.finalResult}</td>
+                <td>${openRequest.requestDate}</td>
+                </tr>
+            </c:forEach>
+            </tbody>
+        </table>
+
+        <h3 class="sub-header">Your current access details</h3>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Watson Instance</th>
+                <th>Status</th>
+                <th>Request Date</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>1,001</td>
+                <td>Lorem</td>
+                <td>ipsum</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
     <a href="access/request">Request Access</a>
 </body>
 </html>
