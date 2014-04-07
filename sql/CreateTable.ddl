@@ -1,45 +1,64 @@
 USE NUR;
 DROP TABLE IF EXISTS HPUSER;
 CREATE TABLE IF NOT EXISTS HPUSER (
-  Gid            VARCHAR(36) NOT NULL PRIMARY KEY,
-  DomainUserName VARCHAR(30) NOT NULL,
-  Instance       VARCHAR(10) NOT NULL,
-  Name           VARCHAR(30),
-  FirstName      VARCHAR(30),
-  LastName       VARCHAR(30),
-  EmployeeID     INT(10),
-  EmployeeEmail  VARCHAR(30),
-  UserStatus     VARCHAR(10),
-  LastLoginDate  DATETIME,
-  CreateDate     DATETIME,
-  LastModifyDate DATETIME,
-  CreatedBy      VARCHAR(32),
-  LastModifiedBy VARCHAR(32)
+  Gid                 VARCHAR(36) NOT NULL PRIMARY KEY,
+  WatsonInstance      VARCHAR(10),
+  DomainUserName      VARCHAR(30),
+  DomainUserNameIndex VARCHAR(30),
+  Name                VARCHAR(30),
+  FirstName           VARCHAR(30),
+  LastName            VARCHAR(30),
+  EmployeeID          VARCHAR(10),
+  Email               VARCHAR(30),
+  UserStatus          VARCHAR(1),
+  LastLoginDate       DATE,
+  CreateDate          DATE,
+  CreatedBy           VARCHAR(32),
+  LastModifyDate      DATE,
+  LastModifiedBy      VARCHAR(32)
 );
 
 DROP TABLE IF EXISTS REQUEST;
 CREATE TABLE IF NOT EXISTS REQUEST (
-  RequestID                 VARCHAR(36) NOT NULL PRIMARY KEY,
-  DomainUserName            VARCHAR(30) NOT NULL,
-  Instance                  VARCHAR(10) NOT NULL,
-  EmployeeID                INT(10),
-  EmployeeEmail             VARCHAR(30),
-  RequestDate               DATETIME,
+  RequestId                 VARCHAR(36) NOT NULL PRIMARY KEY,
+  WatsonInstance            VARCHAR(10),
+  DomainUserName            VARCHAR(30),
+  EmployeeID                VARCHAR(10),
+  Email                     VARCHAR(30),
+  RequestDate               DATE,
   Comments                  VARCHAR(100),
   ManagerDomainUserName     VARCHAR(30),
+  ManagerEmployeeId         VARCHAR(10),
   ManagerEmail              VARCHAR(30),
   ManagerProceed            VARCHAR(5),
-  ManagerProceedDate        DATETIME,
+  ManagerProceedDate        DATE,
   ManagerComments           VARCHAR(100),
   CountryRepDomainUserName  VARCHAR(30),
+  CountryRepEmployeeId      VARCHAR(10),
   CountryRepEmail           VARCHAR(30),
   CountryRepProceed         VARCHAR(5),
-  CountryRepProceedDate     DATETIME,
+  CountryRepProceedDate     DATE,
   CountryRepComments        VARCHAR(100),
   RegionalRepDomainUserName VARCHAR(30),
+  RegionalRepEmployeeId     VARCHAR(10),
   RegionalRepEmail          VARCHAR(30),
   RegionalRepProceed        VARCHAR(5),
-  RegionalRepProceedDate    DATETIME,
+  RegionalRepProceedDate    DATE,
   RegionalRepComments       VARCHAR(100),
   FinalResult               VARCHAR(4)
+);
+
+DROP TABLE IF EXISTS COUNTRY_REP;
+CREATE TABLE IF NOT EXISTS COUNTRY_REP (
+  Gid             VARCHAR(36) NOT NULL PRIMARY KEY,
+  WatsonInstance  VARCHAR(10),
+  DomainUserName  VARCHAR(30),
+  EmployeeID      VARCHAR(10),
+  Email           VARCHAR(30),
+  CountryCode     VARCHAR(3),
+  CountryName     VARCHAR(30),
+  EffectiveDate   DATE,
+  TerminateDate   DATE,
+  EffectiveStatus VARCHAR(1),
+  AssignedBy      VARCHAR(36)
 );

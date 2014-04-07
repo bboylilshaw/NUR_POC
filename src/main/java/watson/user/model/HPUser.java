@@ -9,18 +9,19 @@ import java.util.Date;
 @Table(name = "HPUSER")
 public class HPUser {
     private String gid;
+    private String watsonInstance;
     private String domainUserName;
-    private String instance;
+    private String domainUserNameIndex;
     private String name;
     private String firstName;
     private String lastName;
-    private int employeeID;
-    private String employeeEmail;
+    private String employeeId;
+    private String email;
     private String userStatus;
     private Date lastLoginDate;
     private Date createDate;
-    private Date lastModifyDate;
     private String createdBy;
+    private Date lastModifyDate;
     private String lastModifiedBy;
 
     @Id
@@ -32,6 +33,14 @@ public class HPUser {
         this.gid = gid;
     }
 
+    public String getWatsonInstance() {
+        return watsonInstance;
+    }
+
+    public void setWatsonInstance(String watsonInstance) {
+        this.watsonInstance = watsonInstance;
+    }
+
     public String getDomainUserName() {
         return domainUserName;
     }
@@ -40,12 +49,12 @@ public class HPUser {
         this.domainUserName = domainUserName;
     }
 
-    public String getInstance() {
-        return instance;
+    public String getDomainUserNameIndex() {
+        return domainUserNameIndex;
     }
 
-    public void setInstance(String instance) {
-        this.instance = instance;
+    public void setDomainUserNameIndex(String domainUserNameIndex) {
+        this.domainUserNameIndex = domainUserNameIndex;
     }
 
     public String getName() {
@@ -72,20 +81,20 @@ public class HPUser {
         this.lastName = lastName;
     }
 
-    public int getEmployeeID() {
-        return employeeID;
+    public String getEmployeeId() {
+        return employeeId;
     }
 
-    public void setEmployeeID(int employeeID) {
-        this.employeeID = employeeID;
+    public void setEmployeeId(String employeeId) {
+        this.employeeId = employeeId;
     }
 
-    public String getEmployeeEmail() {
-        return employeeEmail;
+    public String getEmail() {
+        return email;
     }
 
-    public void setEmployeeEmail(String employeeEmail) {
-        this.employeeEmail = employeeEmail;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getUserStatus() {
@@ -112,20 +121,20 @@ public class HPUser {
         this.createDate = createDate;
     }
 
-    public Date getLastModifyDate() {
-        return lastModifyDate;
-    }
-
-    public void setLastModifyDate(Date lastModifyDate) {
-        this.lastModifyDate = lastModifyDate;
-    }
-
     public String getCreatedBy() {
         return createdBy;
     }
 
     public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
+    }
+
+    public Date getLastModifyDate() {
+        return lastModifyDate;
+    }
+
+    public void setLastModifyDate(Date lastModifyDate) {
+        this.lastModifyDate = lastModifyDate;
     }
 
     public String getLastModifiedBy() {

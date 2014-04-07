@@ -1,6 +1,8 @@
 package watson.user.service;
 
 import org.apache.velocity.app.VelocityEngine;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -15,8 +17,10 @@ import java.util.Map;
 @Service("notificationService")
 public class NotificationServiceImpl implements NotificationService {
 
-    private JavaMailSenderImpl javaMailSender;
-    private SimpleMailMessage simpleMailMessage;
+    @Autowired private JavaMailSenderImpl javaMailSender;
+    @Autowired private SimpleMailMessage simpleMailMessage;
+    @Autowired
+    @Qualifier("velocityEngine")
     private VelocityEngine velocityEngine;
 
     @Override

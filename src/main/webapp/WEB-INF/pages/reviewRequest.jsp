@@ -1,9 +1,10 @@
 <html>
 <head>
-    <title>NUR</title>
+    <%@ include file="header.jsp"%>
+    <title>NUR - Review Request</title>
 </head>
 <body>
-    <form action="${pageContext.request.contextPath}/manager/proceed/${requestId}" method="post">
+    <form action="manager/proceed/${requestId}" method="post">
         Requester's information:
         <table>
             <tr>

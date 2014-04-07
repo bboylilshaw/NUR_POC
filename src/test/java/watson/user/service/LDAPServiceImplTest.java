@@ -13,7 +13,7 @@ public class LDAPServiceImplTest {
 
     @Before
     public void getContext(){
-        ctx = new ClassPathXmlApplicationContext("applicationContext.xml");
+        ctx = new ClassPathXmlApplicationContext("WEB-INF/spring-application-context.xml");
     }
 
     @Test
@@ -25,6 +25,7 @@ public class LDAPServiceImplTest {
         System.out.println("   Employee Name = " + hpEmployee.getName());
         System.out.println("   Employee Mail = " + hpEmployee.getEmail());
         System.out.println("   Employee Job Function = " + hpEmployee.getJobFunction());
+        System.out.println("   Employee Country = " + hpEmployee.getCountry());
         System.out.println("   Manager Employee Id = " + hpEmployee.getManagerEmployeeId());
         System.out.println("   Manager Name = " + hpEmployee.getManagerName());
         System.out.println("   Manager Mail = " + hpEmployee.getManagerEmail());
@@ -32,7 +33,7 @@ public class LDAPServiceImplTest {
 
     @Test
     public void testAuthenticateUser(){
-        boolean actual = ctx.getBean("ldapService", LDAPServiceImpl.class).authenticateUser("yao.xiao@hp.com", "Jason19880203!");
+        boolean actual = ctx.getBean("ldapService", LDAPServiceImpl.class).authenticateUser("yao.xiao@hp.com", "");
         Assert.assertTrue(actual);
     }
 }

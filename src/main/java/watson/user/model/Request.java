@@ -1,5 +1,7 @@
 package watson.user.model;
 
+import watson.user.commons.RequestStatus;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -9,24 +11,27 @@ import java.util.UUID;
 @Entity
 @Table(name = "REQUEST")
 public class Request {
-    private String requestID;
+    private String requestId;
+    private String watsonInstance;
     private String domainUserName;
-    private String instance;
-    private int employeeID;
-    private String employeeEmail;
+    private String employeeId;
+    private String email;
     private Date requestDate;
     private String comments;
     private String managerDomainUserName;
+    private String managerEmployeeId;
     private String managerEmail;
     private String managerProceed;
     private Date managerProceedDate;
     private String managerComments;
     private String countryRepDomainUserName;
+    private String countryRepEmployeeId;
     private String countryRepEmail;
     private String countryRepProceed;
     private Date countryRepProceedDate;
     private String countryRepComments;
     private String regionalRepDomainUserName;
+    private String regionalRepEmployeeId;
     private String regionalRepEmail;
     private String regionalRepProceed;
     private Date regionalRepProceedDate;
@@ -34,23 +39,25 @@ public class Request {
     private String finalResult;
 
     public Request() {
-    }
-
-    public Request(String domainUserName, String instance, String comments) {
-        this.requestID = UUID.randomUUID().toString();
-        this.requestDate = new Date();
-        this.domainUserName = domainUserName;
-        this.instance = instance;
-        this.comments = comments;
+        this.requestId = UUID.randomUUID().toString();
+        this.finalResult = RequestStatus.INITIAL;
     }
 
     @Id
-    public String getRequestID() {
-        return requestID;
+    public String getRequestId() {
+        return requestId;
     }
 
-    public void setRequestID(String requestID) {
-        this.requestID = requestID;
+    public void setRequestId(String requestId) {
+        this.requestId = requestId;
+    }
+
+    public String getWatsonInstance() {
+        return watsonInstance;
+    }
+
+    public void setWatsonInstance(String watsonInstance) {
+        this.watsonInstance = watsonInstance;
     }
 
     public String getDomainUserName() {
@@ -61,28 +68,20 @@ public class Request {
         this.domainUserName = domainUserName;
     }
 
-    public String getInstance() {
-        return instance;
+    public String getEmployeeId() {
+        return employeeId;
     }
 
-    public void setInstance(String instance) {
-        this.instance = instance;
+    public void setEmployeeId(String employeeId) {
+        this.employeeId = employeeId;
     }
 
-    public int getEmployeeID() {
-        return employeeID;
+    public String getEmail() {
+        return email;
     }
 
-    public void setEmployeeID(int employeeID) {
-        this.employeeID = employeeID;
-    }
-
-    public String getEmployeeEmail() {
-        return employeeEmail;
-    }
-
-    public void setEmployeeEmail(String employeeEmail) {
-        this.employeeEmail = employeeEmail;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public Date getRequestDate() {
@@ -107,6 +106,14 @@ public class Request {
 
     public void setManagerDomainUserName(String managerDomainUserName) {
         this.managerDomainUserName = managerDomainUserName;
+    }
+
+    public String getManagerEmployeeId() {
+        return managerEmployeeId;
+    }
+
+    public void setManagerEmployeeId(String managerEmployeeId) {
+        this.managerEmployeeId = managerEmployeeId;
     }
 
     public String getManagerEmail() {
@@ -149,6 +156,14 @@ public class Request {
         this.countryRepDomainUserName = countryRepDomainUserName;
     }
 
+    public String getCountryRepEmployeeId() {
+        return countryRepEmployeeId;
+    }
+
+    public void setCountryRepEmployeeId(String countryRepEmployeeId) {
+        this.countryRepEmployeeId = countryRepEmployeeId;
+    }
+
     public String getCountryRepEmail() {
         return countryRepEmail;
     }
@@ -187,6 +202,14 @@ public class Request {
 
     public void setRegionalRepDomainUserName(String regionalRepDomainUserName) {
         this.regionalRepDomainUserName = regionalRepDomainUserName;
+    }
+
+    public String getRegionalRepEmployeeId() {
+        return regionalRepEmployeeId;
+    }
+
+    public void setRegionalRepEmployeeId(String regionalRepEmployeeId) {
+        this.regionalRepEmployeeId = regionalRepEmployeeId;
     }
 
     public String getRegionalRepEmail() {

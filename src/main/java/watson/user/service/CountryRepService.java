@@ -1,14 +1,14 @@
 package watson.user.service;
 
+import watson.user.model.CountryRep;
+import watson.user.model.RegionalRep;
 import watson.user.model.Request;
 
 public interface CountryRepService {
 
-    public Request reviewRequest(String requestID);
+    public Request reviewRequest(String requestId);
 
-    public void approveRequest(String requestID, String countryRepEmail, String comments);
+    public void proceedRequest(String requestId, CountryRep countryRep, String proceedAction, String comments) throws Exception;
 
-    public void denyRequest(String requestID, String countryRepEmail, String comments);
-
-    public void passToRegionalRep(String requestID);
+    public RegionalRep getRegionalRep(String watsonInstance);
 }

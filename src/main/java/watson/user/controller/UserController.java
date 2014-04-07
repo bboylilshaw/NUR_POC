@@ -1,5 +1,6 @@
 package watson.user.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -8,14 +9,13 @@ import watson.user.model.HPEmployee;
 import watson.user.service.LDAPServiceImpl;
 import watson.user.service.UserServiceImpl;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 @Controller
 public class UserController {
 
-    private UserServiceImpl userService;
-    private LDAPServiceImpl ldapService;
+    @Autowired private UserServiceImpl userService;
+    @Autowired private LDAPServiceImpl ldapService;
 
     @RequestMapping(value = "/home", method = RequestMethod.GET)
     public String userHome(HttpServletRequest req, ModelMap modelMap){
@@ -42,6 +42,12 @@ public class UserController {
         return "redirect:/";
     }
 
+    @RequestMapping(value = "/logout", method = RequestMethod.GET)
+    public String doLogout(HttpServletRequest req) {
+        req.getSession().setAttribute("hpEmployee", null);
+        return "redirect:/";
+    }
+
     @RequestMapping(value = "/access/request", method = RequestMethod.GET)
     public String requestAccess() {
         return "requestAccess";
@@ -50,12 +56,11 @@ public class UserController {
     @RequestMapping(value = "/access/request", method = RequestMethod.POST)
     public String doRequestAccess(HttpServletRequest req, ModelMap modelMap) {
         HPEmployee hpEmployee = (HPEmployee) req.getSession().getAttribute("hpEmployee");
-        String domainUserName = hpEmployee.getDomainUserName();
         String instance = req.getParameter("instance");
         String comments = req.getParameter("comments");
 
         try {
-            userService.requestAccess(domainUserName, instance, comments);
+            userService.requestAccess(hpEmployee, instance, comments);
         } catch (Exception e) {
             e.printStackTrace();
             modelMap.addAttribute("error", e.getMessage());
@@ -64,13 +69,4 @@ public class UserController {
         return "redirect:/home";
     }
 
-    @Resource
-    public void setUserService(UserServiceImpl userService) {
-        this.userService = userService;
-    }
-
-    @Resource
-    public void setLdapService(LDAPServiceImpl ldapService) {
-        this.ldapService = ldapService;
-    }
 }

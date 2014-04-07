@@ -1,17 +1,16 @@
 package watson.user.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import watson.user.dao.RequestDaoImpl;
 import watson.user.model.Request;
 
-import javax.annotation.Resource;
-
 public class RegionalRepServiceImpl implements RegionalRepService {
 
-    private RequestDaoImpl requestDao;
+    @Autowired private RequestDaoImpl requestDao;
 
     @Override
     public Request reviewRequest(String requestID) {
-        Request request = requestDao.getRequestByID(requestID);
+        Request request = requestDao.getRequestById(requestID);
         if (request.getRegionalRepProceed().equalsIgnoreCase("IN") && request.getCountryRepProceed().equalsIgnoreCase("AP") && request.getManagerProceed().equalsIgnoreCase("AP")) {
             return request;
         }
@@ -28,8 +27,4 @@ public class RegionalRepServiceImpl implements RegionalRepService {
 
     }
 
-    @Resource
-    public void setRequestDao(RequestDaoImpl requestDao) {
-        this.requestDao = requestDao;
-    }
 }

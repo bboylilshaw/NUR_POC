@@ -1,22 +1,32 @@
 package watson.user.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import watson.user.commons.RequestStatus;
+import watson.user.dao.CountryRepDaoImpl;
+import watson.user.dao.RegionalRepDaoImpl;
 import watson.user.dao.RequestDaoImpl;
+import watson.user.model.CountryRep;
+import watson.user.model.HPEmployee;
+import watson.user.model.RegionalRep;
 import watson.user.model.Request;
 
-import javax.annotation.Resource;
+import java.util.HashMap;
 
-@Service
+@Service("managerService")
 public class ManagerServiceImpl implements ManagerService {
 
-    private RequestDaoImpl requestDao;
+    @Autowired private RequestDaoImpl requestDao;
+    @Autowired private CountryRepDaoImpl countryRepDao;
+    @Autowired private RegionalRepDaoImpl regionalRepDao;
+    @Autowired private LDAPServiceImpl ldapService;
+    @Autowired private NotificationServiceImpl notificationService;
 
     @Override
     @Transactional(readOnly = true)
-    public Request reviewRequest(String requestID) {
-        Request request = requestDao.getRequestByID(requestID);
+    public Request reviewRequest(String requestId){
+        Request request = requestDao.getRequestById(requestId);
         if (request != null && request.getManagerProceed().equalsIgnoreCase(RequestStatus.INITIAL)) {
             return request;
         }
@@ -25,53 +35,59 @@ public class ManagerServiceImpl implements ManagerService {
 
     @Override
     @Transactional
-    public void approveRequest(String requestID, String managerEmail, String comments) {
-        Request request = reviewRequest(requestID);
-        //if the request is still "IN" status, then proceed
-        if (request.getManagerProceed().equalsIgnoreCase(RequestStatus.INITIAL)) {
-            requestDao.proceedByManager(requestID, managerEmail, RequestStatus.APPROVED, comments);
-            // if requester is in same domain, then pass to country rep, if not, skip country rep and pass to regional rep
-            if (request.getDomainUserName().startsWith("AISAPACIFIC") && request.getInstance().equalsIgnoreCase("apwatson")
-                    || request.getDomainUserName().startsWith("EMEA") && request.getInstance().equalsIgnoreCase("eubwatson")
-                    || request.getDomainUserName().startsWith("EMEA") && request.getInstance().equalsIgnoreCase("euwatson")
-                    || request.getDomainUserName().startsWith("AMERICAS") && request.getInstance().equalsIgnoreCase("nawatson")
-                    || request.getDomainUserName().startsWith("AMERICAS") && request.getInstance().equalsIgnoreCase("lawatson")) {
-                //TODO pass to country rep
-                //passToCountryRep();
-                //send notifications
-            } else {//skip country rep, direct pass to regional rep
-                //TODO pass to regional rep
-                //passToRegionalRep();
-                //send notifications
+    public void proceedRequest(String requestId, String proceedAction, String comments) throws Exception{
+        Request request = this.reviewRequest(requestId);
+        // this managerProceed is not "IN", which means this request has been proceeded
+        if (!request.getManagerProceed().equalsIgnoreCase(RequestStatus.INITIAL)) {
+            throw new Exception("This request has been proceeded!");
+        }
+
+        if (proceedAction.equalsIgnoreCase(RequestStatus.APPROVED)) { //Manager approved the request
+
+            if (this.skipCountryRep(request)) {//skip country rep, direct pass to regional rep
+                //pass to regional rep directly by setting countryRepProceed as "SK" and regionalRepProceed as "IN"
+                requestDao.approvedByManager(requestId, comments, true);
+                //TODO send notifications
+            } else {
+                //pass to country rep by setting countryRepProceed as "IN"
+                requestDao.approvedByManager(requestId, comments);
+                CountryRep countryRep = this.getCountryRep(request);
+                //TODO send notifications
+                String toCountryRepEmail = "yao.xiao@hp.com";
+                String ccEmail = "yao.xiao@hp.com";
+                String templateName = "EmailTemplates/UserRegInitialNotificationTemplate.vm";
+                HashMap<String, String> model = new HashMap<String, String>();
+                model.put("approver", "Approver");
+                model.put("url", "http://localhost:8080/NUR_POC/countryRep/review/request/" + requestId);
+                notificationService.sendEmailWithTemplate(toCountryRepEmail, ccEmail, templateName, model);
             }
-        } else {// already proceed the request before, throw an error
-            throw new RuntimeException("already proceed the request");
+        } else if (proceedAction.equalsIgnoreCase(RequestStatus.DENIED)) { //Manager denied the request
+            requestDao.deniedByManager(requestId, comments);
         }
     }
 
-    @Override
-    @Transactional
-    public void denyRequest(String requestID, String managerEmail, String comments) {
-        Request request = reviewRequest(requestID);
-        //if the request is still "IN" status, then proceed
-        if (request.getManagerProceed().equalsIgnoreCase(RequestStatus.INITIAL)) {
-            requestDao.proceedByManager(requestID, managerEmail, RequestStatus.DENIED, comments);
-        }
+    private boolean skipCountryRep(Request request) {
+        String requestWatsonInstance = request.getWatsonInstance();
+        if (request.getDomainUserName().toUpperCase().startsWith("ASIAPACIFIC") && requestWatsonInstance.equalsIgnoreCase("apwatson"))
+            return false;
+        if (request.getDomainUserName().toUpperCase().startsWith("EMEA") && (requestWatsonInstance.equalsIgnoreCase("euwatson") || requestWatsonInstance.equalsIgnoreCase("eubwatson")))
+            return false;
+        if (request.getDomainUserName().toUpperCase().startsWith("AMERICAS") && (requestWatsonInstance.equalsIgnoreCase("nawatson") || requestWatsonInstance.equalsIgnoreCase("lawatson")))
+            return false;
+        return true;
     }
 
     @Override
-    public void passToCountryRep(String requestID) {
-
+    public CountryRep getCountryRep(Request request) {
+        HPEmployee hpEmployee = ldapService.getEmployeeDataByDomainUserName(request.getDomainUserName());
+        CountryRep countryRep = countryRepDao.getCountryRepByCountryCode(hpEmployee.getCountry());
+        return countryRep;
     }
 
     @Override
-    public void passToRegionalRep(String requestID) {
-
-    }
-
-    @Resource
-    public void setRequestDao(RequestDaoImpl requestDao) {
-        this.requestDao = requestDao;
+    public RegionalRep getRegionalRep(String watsonInstance) {
+        RegionalRep regionalRep = regionalRepDao.getRegionalRep(watsonInstance);
+        return regionalRep;
     }
 
 }

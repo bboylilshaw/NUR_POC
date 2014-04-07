@@ -19,11 +19,6 @@
             </tr>
             </thead>
             <tbody>
-            <tr>
-                <td>1,001</td>
-                <td>Lorem</td>
-                <td>ipsum</td>
-            </tr>
             </tbody>
         </table>
 
@@ -39,7 +34,7 @@
             <tbody>
             <c:forEach var="openRequest" items="${openAccessRequests}">
                 <tr>
-                <td>${openRequest.instance}</td>
+                <td>${openRequest.watsonInstance}</td>
                 <td>${openRequest.finalResult}</td>
                 <td>${openRequest.requestDate}</td>
                 </tr>
@@ -47,7 +42,7 @@
             </tbody>
         </table>
 
-        <h3 class="sub-header">Your current access details</h3>
+        <h3 class="sub-header">Access requests awating your approval</h3>
         <table class="table">
             <thead>
             <tr>
@@ -57,11 +52,6 @@
             </tr>
             </thead>
             <tbody>
-            <tr>
-                <td>1,001</td>
-                <td>Lorem</td>
-                <td>ipsum</td>
-            </tr>
             </tbody>
         </table>
     </div>
