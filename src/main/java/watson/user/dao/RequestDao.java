@@ -13,26 +13,26 @@ public interface RequestDao {
 
     public String submitRequest(HPEmployee hpEmployee, String watsonInstance, String comments);
 
-    public String approvedByManager(String requestId, String comments);
+    public Request proceededByManager(Request request, String proceedAction, String comments, CountryRep countryRep, RegionalRep regionalRep);
 
-    public String approvedByManager(String requestId, String comments, boolean skipCountryRep);
+    public Request proceededByManager(Request request, String proceedAction, String comments, CountryRep countryRep, RegionalRep regionalRep, boolean skipCountryRep);
 
-    public String deniedByManager(String requestId, String comments);
+    public Request proceededByCountryRep(Request request, String proceedAction, String comments, RegionalRep regionalRep);
 
-    public String approvedByCountryRep(String requestId, CountryRep countryRep, String comments);
-
-    public String deniedByCountryRep(String requestId, CountryRep countryRep, String comments);
-
-    public String approvedByRegionalRep(String requestId, RegionalRep regionalRep, String comments);
-
-    public String deniedByRegionalRep(String requestId, RegionalRep regionalRep, String comments);
+    public Request proceededByRegionalRep(Request request, String proceedAction, String comments);
 
     public boolean allowToSubmit(String domainUserName, String watsonInstance);
 
     public void setRequestExpired(String requestId, String expiredLevel);
 
-    public List<Request> listOpenAccessRequests(String domainUserName);
+    public List<Request> listOpenRequests(String domainUserName);
 
-    public List<Request> listAccessRequestsAwaitingApproval(String domainUserName);
+    public List<Request> listRequestsAwaitingApproval(String domainUserName);
+
+    public List<Request> listRequestsAwaitingManagerApproval(String managerDomainUserName);
+
+    public List<Request> listRequestsAwaitingCountryRepApproval(String watsonInstance, String countryCode);
+
+    public List<Request> listRequestsAwaitingRegionalRepApproval(String watsonInstance);
 
 }

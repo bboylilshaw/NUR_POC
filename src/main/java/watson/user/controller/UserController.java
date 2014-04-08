@@ -17,15 +17,24 @@ public class UserController {
     @Autowired private UserServiceImpl userService;
     @Autowired private LDAPServiceImpl ldapService;
 
+    @RequestMapping(value = "/", method = RequestMethod.GET)
+    public String index(HttpServletRequest req) {
+        if (req.getSession().getAttribute("hpEmployee") != null) {
+            return "redirect:/home";
+        }
+        return "index";
+    }
+
     @RequestMapping(value = "/home", method = RequestMethod.GET)
     public String userHome(HttpServletRequest req, ModelMap modelMap){
         HPEmployee hpEmployee = (HPEmployee) req.getSession().getAttribute("hpEmployee");
         if (hpEmployee == null) {
             return "redirect:/";
         }
-        modelMap.addAttribute("domainUserName", hpEmployee.getDomainUserName());
-        modelMap.addAttribute("openAccessRequests", userService.listOpenAccessRequests(hpEmployee.getDomainUserName()));
-        modelMap.addAttribute("accessRequestsAwaitingApproval", userService.listAccessRequestsAwaitingApproval(hpEmployee.getDomainUserName()));
+        String domainUserName = hpEmployee.getDomainUserName();
+        modelMap.addAttribute("domainUserName", domainUserName);
+        modelMap.addAttribute("openRequests", userService.listOpenRequests(domainUserName));
+        modelMap.addAttribute("requestsAwaitingApproval", userService.listRequestsAwaitingApproval(domainUserName));
         return "home";
     }
 

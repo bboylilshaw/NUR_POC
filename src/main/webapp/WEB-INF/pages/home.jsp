@@ -32,11 +32,11 @@
             </tr>
             </thead>
             <tbody>
-            <c:forEach var="openRequest" items="${openAccessRequests}">
+            <c:forEach var="request" items="${openRequests}">
                 <tr>
-                <td>${openRequest.watsonInstance}</td>
-                <td>${openRequest.finalResult}</td>
-                <td>${openRequest.requestDate}</td>
+                <td>${request.watsonInstance}</td>
+                <td>${request.finalResult}</td>
+                <td>${request.requestDate}</td>
                 </tr>
             </c:forEach>
             </tbody>
@@ -51,6 +51,13 @@
                 <th>Request Date</th>
             </tr>
             </thead>
+            <c:forEach var="request" items="${requestsAwaitingApproval}">
+                <tr>
+                    <td>${request.watsonInstance}</td>
+                    <td>${request.finalResult}</td>
+                    <td>${request.requestDate}</td>
+                </tr>
+            </c:forEach>
             <tbody>
             </tbody>
         </table>

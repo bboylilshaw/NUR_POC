@@ -1,8 +1,12 @@
 package watson.user.model;
 
+import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 import java.util.Date;
 
+@Entity
+@Table(name = "REGIONAL_REP")
 public class RegionalRep {
     private String gid;
     private String watsonInstance;

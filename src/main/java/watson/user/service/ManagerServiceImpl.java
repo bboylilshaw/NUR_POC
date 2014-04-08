@@ -42,28 +42,21 @@ public class ManagerServiceImpl implements ManagerService {
             throw new Exception("This request has been proceeded!");
         }
 
-        if (proceedAction.equalsIgnoreCase(RequestStatus.APPROVED)) { //Manager approved the request
+        CountryRep countryRep = this.getCountryRep(request);
+        RegionalRep regionalRep = this.getRegionalRep(request);
 
-            if (this.skipCountryRep(request)) {//skip country rep, direct pass to regional rep
-                //pass to regional rep directly by setting countryRepProceed as "SK" and regionalRepProceed as "IN"
-                requestDao.approvedByManager(requestId, comments, true);
-                //TODO send notifications
-            } else {
-                //pass to country rep by setting countryRepProceed as "IN"
-                requestDao.approvedByManager(requestId, comments);
-                CountryRep countryRep = this.getCountryRep(request);
-                //TODO send notifications
-                String toCountryRepEmail = "yao.xiao@hp.com";
-                String ccEmail = "yao.xiao@hp.com";
-                String templateName = "EmailTemplates/UserRegInitialNotificationTemplate.vm";
-                HashMap<String, String> model = new HashMap<String, String>();
-                model.put("approver", "Approver");
-                model.put("url", "http://localhost:8080/NUR_POC/countryRep/review/request/" + requestId);
-                notificationService.sendEmailWithTemplate(toCountryRepEmail, ccEmail, templateName, model);
-            }
-        } else if (proceedAction.equalsIgnoreCase(RequestStatus.DENIED)) { //Manager denied the request
-            requestDao.deniedByManager(requestId, comments);
-        }
+        requestDao.proceededByManager(request, proceedAction, comments, countryRep, regionalRep, skipCountryRep(request));
+
+
+        //TODO send notifications
+        String toCountryRepEmail = "yao.xiao@hp.com";
+        String ccEmail = "yao.xiao@hp.com";
+        String templateName = "EmailTemplates/UserRegInitialNotificationTemplate.vm";
+        HashMap<String, String> model = new HashMap<String, String>();
+        model.put("approver", "Approver");
+        model.put("url", "http://localhost:8080/NUR_POC/countryRep/review/request/" + requestId);
+        notificationService.sendEmailWithTemplate(toCountryRepEmail, ccEmail, templateName, model);
+
     }
 
     private boolean skipCountryRep(Request request) {

@@ -62,3 +62,17 @@ CREATE TABLE IF NOT EXISTS COUNTRY_REP (
   EffectiveStatus VARCHAR(1),
   AssignedBy      VARCHAR(36)
 );
+
+DROP TABLE IF EXISTS REGIONAL_REP;
+CREATE TABLE IF NOT EXISTS REGIONAL_REP (
+  Gid             VARCHAR(36) NOT NULL PRIMARY KEY,
+  WatsonInstance  VARCHAR(10),
+  DomainUserName  VARCHAR(30),
+  EmployeeID      VARCHAR(10),
+  Email           VARCHAR(30),
+  Region          VARCHAR(10),
+  EffectiveDate   DATE,
+  TerminateDate   DATE,
+  EffectiveStatus VARCHAR(1),
+  AssignedBy      VARCHAR(36)
+);

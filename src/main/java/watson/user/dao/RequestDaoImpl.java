@@ -47,75 +47,75 @@ public class RequestDaoImpl implements RequestDao {
     }
 
     @Override
-    public String approvedByManager(String requestId, String comments) {
-        return this.approvedByManager(requestId, comments, false);
+    public Request proceededByManager(Request request, String proceedAction, String comments, CountryRep countryRep, RegionalRep regionalRep) {
+        // default does not skip country rep
+        return this.proceededByManager(request, proceedAction, comments, countryRep, regionalRep, false);
     }
 
     @Override
-    public String approvedByManager(String requestId, String comments, boolean skipCountryRep) {
-        Request request = this.getRequestById(requestId);
-        request.setManagerProceed(RequestStatus.APPROVED);
+    public Request proceededByManager(Request request, String proceedAction, String comments, CountryRep countryRep, RegionalRep regionalRep, boolean skipCountryRep) {
+
+        request.setManagerProceed(proceedAction);
         request.setManagerProceedDate(new Date());
         request.setManagerComments(comments);
-        request.setCountryRepProceed(RequestStatus.INITIAL);
         request.setFinalResult(RequestStatus.WIP);
-        if (skipCountryRep) {
-            request.setCountryRepProceed(RequestStatus.SKIP);
-            request.setCountryRepProceedDate(new Date());
-            request.setRegionalRepProceed(RequestStatus.INITIAL);
+
+        if (proceedAction.equalsIgnoreCase(RequestStatus.APPROVED)) {
+
+            request.setCountryRepDomainUserName(countryRep.getDomainUserName());
+            request.setCountryRepEmployeeId(countryRep.getEmployeeId());
+            request.setCountryRepEmail(countryRep.getEmail());
+            request.setCountryRepProceed(RequestStatus.INITIAL);
+
+            if (skipCountryRep) {
+                request.setCountryRepProceed(RequestStatus.SKIP);
+                request.setCountryRepProceedDate(new Date());
+                //initial Regional Rep notification
+                request.setRegionalRepDomainUserName(regionalRep.getDomainUserName());
+                request.setRegionalRepEmployeeId(regionalRep.getEmployeeId());
+                request.setRegionalRepEmail(regionalRep.getEmail());
+                request.setRegionalRepProceed(RequestStatus.INITIAL);
+            }
+
+        } else if (proceedAction.equalsIgnoreCase(RequestStatus.DENIED)) {
+            request.setFinalResult(RequestStatus.DENIED);
         }
+
         sessionFactory.getCurrentSession().update(request);
-        return requestId;
+        return request;
     }
 
     @Override
-    public String deniedByManager(String requestId, String comments) {
-        Request request = this.getRequestById(requestId);
-        request.setManagerProceed(RequestStatus.DENIED);
-        request.setManagerProceedDate(new Date());
-        request.setManagerComments(comments);
-        request.setFinalResult(RequestStatus.DENIED);
-        sessionFactory.getCurrentSession().update(request);
-        return requestId;
-    }
+    public Request proceededByCountryRep(Request request, String proceedAction, String comments, RegionalRep regionalRep) {
 
-    @Override
-    public String approvedByCountryRep(String requestId, CountryRep countryRep, String comments) {
-        Request request = this.getRequestById(requestId);
-        request.setCountryRepDomainUserName(countryRep.getDomainUserName());
-        request.setCountryRepEmployeeId(countryRep.getEmployeeId());
-        request.setCountryRepEmail(countryRep.getEmail());
-        request.setCountryRepProceed(RequestStatus.APPROVED);
+        request.setCountryRepProceed(proceedAction);
         request.setCountryRepProceedDate(new Date());
         request.setCountryRepComments(comments);
-        request.setRegionalRepProceed(RequestStatus.INITIAL);
         request.setFinalResult(RequestStatus.WIP);
+
+        if (proceedAction.equalsIgnoreCase(RequestStatus.APPROVED)) {
+            request.setRegionalRepDomainUserName(regionalRep.getDomainUserName());
+            request.setRegionalRepEmployeeId(regionalRep.getEmployeeId());
+            request.setRegionalRepEmail(regionalRep.getEmail());
+            request.setRegionalRepProceed(RequestStatus.INITIAL);
+
+        } else if (proceedAction.equalsIgnoreCase(RequestStatus.DENIED)) {
+            request.setFinalResult(RequestStatus.DENIED);
+        }
+
         sessionFactory.getCurrentSession().update(request);
-        return requestId;
+        return request;
     }
 
     @Override
-    public String deniedByCountryRep(String requestId, CountryRep countryRep, String comments) {
-        Request request = this.getRequestById(requestId);
-        request.setCountryRepDomainUserName(countryRep.getDomainUserName());
-        request.setCountryRepEmployeeId(countryRep.getEmployeeId());
-        request.setCountryRepEmail(countryRep.getEmail());
-        request.setCountryRepProceed(RequestStatus.DENIED);
-        request.setCountryRepProceedDate(new Date());
-        request.setCountryRepComments(comments);
-        request.setFinalResult(RequestStatus.DENIED);
+    public Request proceededByRegionalRep(Request request, String proceedAction, String comments) {
+
+        request.setRegionalRepProceed(proceedAction);
+        request.setRegionalRepProceedDate(new Date());
+        request.setFinalResult(proceedAction);
+
         sessionFactory.getCurrentSession().update(request);
-        return requestId;
-    }
-
-    @Override
-    public String approvedByRegionalRep(String requestId, RegionalRep regionalRep, String comments) {
-        return null;
-    }
-
-    @Override
-    public String deniedByRegionalRep(String requestId, RegionalRep regionalRep, String comments) {
-        return null;
+        return request;
     }
 
     @Override
@@ -153,7 +153,7 @@ public class RequestDaoImpl implements RequestDao {
     }
 
     @Override
-    public List<Request> listOpenAccessRequests(String domainUserName) {
+    public List<Request> listOpenRequests(String domainUserName) {
         String hql = "from Request as r where r.domainUserName=:domainUserName and r.finalResult in (:init, :wip)";
         Query query = sessionFactory.getCurrentSession().createQuery(hql);
         return query.setString("domainUserName", domainUserName)
@@ -163,13 +163,45 @@ public class RequestDaoImpl implements RequestDao {
     }
 
     @Override
-    public List<Request> listAccessRequestsAwaitingApproval(String domainUserName) {
-        String hql = "from Request as r where (r.managerDomainUserName=:domainUserName and r.managerProceed=:in)"
-                                       + " or (r.countryRepDomainUserName=:domainUserName and r.countryRepProceed=:in)"
-                                       + " or (r.regionalRepDomainUserName=:domainUserName and r.regionalRepProceed=:in)";
-        Query query = sessionFactory.getCurrentSession().createQuery(hql);
+    public List<Request> listRequestsAwaitingApproval(String domainUserName) {
+        String sql = "SELECT * FROM REQUEST r WHERE r.FinalResult IN (:init, :wip)"
+                    + "AND ((r.ManagerDomainUserName=:domainUserName AND r.ManagerProceed=:init)"
+                    + "OR (r.CountryRepDomainUserName=:domainUserName AND r.CountryRepProceed=:init)"
+                    + "OR (r.RegionalRepDomainUserName=:domainUserName AND r.RegionalRepProceed=:init))";
+        Query query = sessionFactory.getCurrentSession().createSQLQuery(sql);
         return query.setString("domainUserName", domainUserName)
-                    .setString("in", RequestStatus.INITIAL)
+                    .setString("init", RequestStatus.INITIAL)
+                    .setString("wip", RequestStatus.WIP)
+                    .list();
+    }
+
+    @Override
+    public List<Request> listRequestsAwaitingManagerApproval(String managerDomainUserName) {
+        String hql = "from Request as r where r.managerDomainUserName=:managerDomainUserName and r.managerProceed=:init";
+        Query query = sessionFactory.getCurrentSession().createQuery(hql);
+        return query.setString("managerDomainUserName", managerDomainUserName)
+                    .setString("init", RequestStatus.INITIAL)
+                    .list();
+    }
+
+    @Override
+    public List<Request> listRequestsAwaitingCountryRepApproval(String watsonInstance, String countryCode) {
+        String sql = "SELECT * FROM REQUEST r WHERE r.CountryRepDomainUserName in"
+                   + " (SELECT cr.DomainUserName FROM COUNTRY_REP cr WHERE cr.WatsonInstance=:watsonInstance AND cr.CountryCode=:countryCode AND cr.EffectiveStatus=:active) ";
+        Query query = sessionFactory.getCurrentSession().createSQLQuery(sql);
+        return query.setString("watsonInstance", watsonInstance)
+                    .setString("countryCode", countryCode)
+                    .setString("active", "A")
+                    .list();
+    }
+
+    @Override
+    public List<Request> listRequestsAwaitingRegionalRepApproval(String watsonInstance) {
+        String sql = "SELECT * FROM REQUEST r WHERE r.RegionalRepDomainUserName in"
+                + " (SELECT rr.DomainUserName FROM REGIONAL_REP rr WHERE rr.WatsonInstance=:watsonInstance AND rr.EffectiveStatus=:active) ";
+        Query query = sessionFactory.getCurrentSession().createSQLQuery(sql);
+        return query.setString("watsonInstance", watsonInstance)
+                    .setString("active", "A")
                     .list();
     }
 

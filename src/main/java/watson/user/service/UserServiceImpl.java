@@ -52,14 +52,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public List<Request> listOpenAccessRequests(String domainUserName) {
-        return requestDao.listOpenAccessRequests(domainUserName);
+    public List<Request> listOpenRequests(String domainUserName) {
+        return requestDao.listOpenRequests(domainUserName);
     }
 
     @Override
     @Transactional
-    public List<Request> listAccessRequestsAwaitingApproval(String domainUserName) {
-        return requestDao.listAccessRequestsAwaitingApproval(domainUserName);
+    public List<Request> listRequestsAwaitingApproval(String domainUserName) {
+        return requestDao.listRequestsAwaitingApproval(domainUserName);
     }
 
 }

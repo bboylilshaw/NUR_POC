@@ -11,8 +11,8 @@ public interface UserService {
 
     public List<Request> listCurrentAccess(String domainUserName);
 
-    public List<Request> listOpenAccessRequests(String domainUserName);
+    public List<Request> listOpenRequests(String domainUserName);
 
-    public List<Request> listAccessRequestsAwaitingApproval(String domainUserName);
+    public List<Request> listRequestsAwaitingApproval(String domainUserName);
 
 }
