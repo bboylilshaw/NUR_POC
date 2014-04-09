@@ -6,7 +6,6 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
-import watson.user.commons.ExpiredLevel;
 import watson.user.commons.RequestStatus;
 import watson.user.model.CountryRep;
 import watson.user.model.HPEmployee;
@@ -34,6 +33,7 @@ public class RequestDaoImpl implements RequestDao {
         Request request = new Request();
         request.setWatsonInstance(watsonInstance);
         request.setDomainUserName(hpEmployee.getDomainUserName());
+        request.setCountry(hpEmployee.getCountry());
         request.setEmployeeId(hpEmployee.getEmployeeId());
         request.setEmail(hpEmployee.getEmail());
         request.setComments(comments);
@@ -42,6 +42,7 @@ public class RequestDaoImpl implements RequestDao {
         request.setManagerEmployeeId(hpEmployee.getManagerEmployeeId());
         request.setManagerEmail(hpEmployee.getManagerEmail());
         request.setManagerProceed(RequestStatus.INITIAL);
+        request.setStatus(RequestStatus.PENDING_MANAGER); //set request status as pending manager
         sessionFactory.getCurrentSession().save(request);
         return request.getRequestId();
     }
@@ -58,27 +59,26 @@ public class RequestDaoImpl implements RequestDao {
         request.setManagerProceed(proceedAction);
         request.setManagerProceedDate(new Date());
         request.setManagerComments(comments);
-        request.setFinalResult(RequestStatus.WIP);
+        request.setStatus(RequestStatus.PENDING_COUNTRY_REP);// default set status as pending country rep's approval
 
-        if (proceedAction.equalsIgnoreCase(RequestStatus.APPROVED)) {
-
+        if (proceedAction.equalsIgnoreCase(RequestStatus.DENIED)) {
+            request.setStatus(RequestStatus.DENIED);
+        } else {
             request.setCountryRepDomainUserName(countryRep.getDomainUserName());
             request.setCountryRepEmployeeId(countryRep.getEmployeeId());
             request.setCountryRepEmail(countryRep.getEmail());
             request.setCountryRepProceed(RequestStatus.INITIAL);
 
             if (skipCountryRep) {
-                request.setCountryRepProceed(RequestStatus.SKIP);
+                request.setCountryRepProceed(RequestStatus.SKIP_COUNTRY_REP);
                 request.setCountryRepProceedDate(new Date());
                 //initial Regional Rep notification
                 request.setRegionalRepDomainUserName(regionalRep.getDomainUserName());
                 request.setRegionalRepEmployeeId(regionalRep.getEmployeeId());
                 request.setRegionalRepEmail(regionalRep.getEmail());
                 request.setRegionalRepProceed(RequestStatus.INITIAL);
+                request.setStatus(RequestStatus.PENDING_REGIONAL_REP);
             }
-
-        } else if (proceedAction.equalsIgnoreCase(RequestStatus.DENIED)) {
-            request.setFinalResult(RequestStatus.DENIED);
         }
 
         sessionFactory.getCurrentSession().update(request);
@@ -91,16 +91,15 @@ public class RequestDaoImpl implements RequestDao {
         request.setCountryRepProceed(proceedAction);
         request.setCountryRepProceedDate(new Date());
         request.setCountryRepComments(comments);
-        request.setFinalResult(RequestStatus.WIP);
+        request.setStatus(RequestStatus.PENDING_REGIONAL_REP);
 
-        if (proceedAction.equalsIgnoreCase(RequestStatus.APPROVED)) {
+        if (proceedAction.equalsIgnoreCase(RequestStatus.DENIED)) {
+            request.setStatus(RequestStatus.DENIED);
+        } else {
             request.setRegionalRepDomainUserName(regionalRep.getDomainUserName());
             request.setRegionalRepEmployeeId(regionalRep.getEmployeeId());
             request.setRegionalRepEmail(regionalRep.getEmail());
             request.setRegionalRepProceed(RequestStatus.INITIAL);
-
-        } else if (proceedAction.equalsIgnoreCase(RequestStatus.DENIED)) {
-            request.setFinalResult(RequestStatus.DENIED);
         }
 
         sessionFactory.getCurrentSession().update(request);
@@ -112,7 +111,7 @@ public class RequestDaoImpl implements RequestDao {
 
         request.setRegionalRepProceed(proceedAction);
         request.setRegionalRepProceedDate(new Date());
-        request.setFinalResult(proceedAction);
+        request.setStatus(proceedAction);
 
         sessionFactory.getCurrentSession().update(request);
         return request;
@@ -120,58 +119,40 @@ public class RequestDaoImpl implements RequestDao {
 
     @Override
     public boolean allowToSubmit(String domainUserName, String watsonInstance) {
-        String hql = "from Request as r where r.domainUserName=:domainUserName and r.watsonInstance=:watsonInstance and r.finalResult in (:init, :wip, :ap)";
+        String hql = "from Request as r where r.domainUserName=:domainUserName and r.watsonInstance=:watsonInstance and r.status not in (:denied, :exired)";
         Query query = sessionFactory.getCurrentSession().createQuery(hql);
         List<Request> results = query.setString("domainUserName", domainUserName)
                                      .setString("watsonInstance", watsonInstance)
-                                     .setString("init", RequestStatus.INITIAL)
-                                     .setString("wip", RequestStatus.WIP)
-                                     .setString("ap", RequestStatus.APPROVED)
+                                     .setString("denied", RequestStatus.DENIED)
+                                     .setString("exired", RequestStatus.EXPIRED)
                                      .list();
         //if no requests being found, then allow to submit
         return results.size() <= 0;
     }
 
     @Override
-    public void setRequestExpired(String requestID, String expiredLevel) {
-        Request request = getRequestById(requestID);
-        if (expiredLevel.equalsIgnoreCase(ExpiredLevel.MANAGER)) {
-            request.setManagerProceed(RequestStatus.EXPIRED);
-            request.setFinalResult(RequestStatus.EXPIRED);
-            sessionFactory.getCurrentSession().update(request);
-        } else if (expiredLevel.equalsIgnoreCase(ExpiredLevel.COUNTRY_REP)) {
-            request.setCountryRepProceed(RequestStatus.EXPIRED);
-            request.setFinalResult(RequestStatus.EXPIRED);
-            sessionFactory.getCurrentSession().update(request);
-        } else if (expiredLevel.equalsIgnoreCase(ExpiredLevel.REGIONAL_REP)) {
-            request.setRegionalRepProceed(RequestStatus.EXPIRED);
-            request.setFinalResult(RequestStatus.EXPIRED);
-            sessionFactory.getCurrentSession().update(request);
-        } else {
-            throw new RuntimeException("cannot define expired in which level");
-        }
-    }
-
-    @Override
     public List<Request> listOpenRequests(String domainUserName) {
-        String hql = "from Request as r where r.domainUserName=:domainUserName and r.finalResult in (:init, :wip)";
+        String hql = "from Request as r where r.domainUserName=:domainUserName and r.status in (:pm, :pcr, :prr)";
         Query query = sessionFactory.getCurrentSession().createQuery(hql);
         return query.setString("domainUserName", domainUserName)
-                    .setString("init", RequestStatus.INITIAL)
-                    .setString("wip", RequestStatus.WIP)
+                    .setString("pm", RequestStatus.PENDING_MANAGER)
+                    .setString("pcr", RequestStatus.PENDING_COUNTRY_REP)
+                    .setString("prr", RequestStatus.PENDING_REGIONAL_REP)
                     .list();
     }
 
     @Override
     public List<Request> listRequestsAwaitingApproval(String domainUserName) {
-        String sql = "SELECT * FROM REQUEST r WHERE r.FinalResult IN (:init, :wip)"
-                    + "AND ((r.ManagerDomainUserName=:domainUserName AND r.ManagerProceed=:init)"
-                    + "OR (r.CountryRepDomainUserName=:domainUserName AND r.CountryRepProceed=:init)"
-                    + "OR (r.RegionalRepDomainUserName=:domainUserName AND r.RegionalRepProceed=:init))";
-        Query query = sessionFactory.getCurrentSession().createSQLQuery(sql);
+        String hql = "from Request as r where r.status in (:pm, :pcr, :prr)"
+                    + "and ((r.managerDomainUserName=:domainUserName and r.managerProceed=:init)"
+                    + "or (r.countryRepDomainUserName=:domainUserName and r.countryRepProceed=:init)"
+                    + "or (r.regionalRepDomainUserName=:domainUserName and r.regionalRepProceed=:init))";
+        Query query = sessionFactory.getCurrentSession().createQuery(hql);
         return query.setString("domainUserName", domainUserName)
+                    .setString("pm", RequestStatus.PENDING_MANAGER)
+                    .setString("pcr", RequestStatus.PENDING_COUNTRY_REP)
+                    .setString("prr", RequestStatus.PENDING_REGIONAL_REP)
                     .setString("init", RequestStatus.INITIAL)
-                    .setString("wip", RequestStatus.WIP)
                     .list();
     }
 
@@ -203,6 +184,18 @@ public class RequestDaoImpl implements RequestDao {
         return query.setString("watsonInstance", watsonInstance)
                     .setString("active", "A")
                     .list();
+    }
+
+    @Override
+    public int getCurrentApprovalLevel(String requestId) {
+        Request request = (Request) sessionFactory.getCurrentSession().get(Request.class, requestId);
+        if (request.getManagerProceed().equalsIgnoreCase(RequestStatus.INITIAL))
+            return 1;
+        if (request.getCountryRepProceed().equalsIgnoreCase(RequestStatus.INITIAL))
+            return 2;
+        if (request.getRegionalRepProceed().equalsIgnoreCase(RequestStatus.INITIAL))
+            return 3;
+        return 0;
     }
 
 }

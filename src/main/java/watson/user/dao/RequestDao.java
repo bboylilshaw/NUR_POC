@@ -23,8 +23,6 @@ public interface RequestDao {
 
     public boolean allowToSubmit(String domainUserName, String watsonInstance);
 
-    public void setRequestExpired(String requestId, String expiredLevel);
-
     public List<Request> listOpenRequests(String domainUserName);
 
     public List<Request> listRequestsAwaitingApproval(String domainUserName);
@@ -34,5 +32,7 @@ public interface RequestDao {
     public List<Request> listRequestsAwaitingCountryRepApproval(String watsonInstance, String countryCode);
 
     public List<Request> listRequestsAwaitingRegionalRepApproval(String watsonInstance);
+
+    public int getCurrentApprovalLevel(String requestId);
 
 }

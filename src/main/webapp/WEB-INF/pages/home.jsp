@@ -6,7 +6,7 @@
 </head>
 <body>
 
-    <p class="h2">Welcome, ${domainUserName}! This is the Watson User Adminstration Page.</p>
+    <p class="h2">Welcome, ${domainUserName}! This is the Watson User Home Page.</p>
     <hr/>
     <div class="col-lg-6">
         <h3 class="sub-header">Your current access details</h3>
@@ -35,27 +35,29 @@
             <c:forEach var="request" items="${openRequests}">
                 <tr>
                 <td>${request.watsonInstance}</td>
-                <td>${request.finalResult}</td>
+                <td>${request.status}</td>
                 <td>${request.requestDate}</td>
                 </tr>
             </c:forEach>
             </tbody>
         </table>
 
-        <h3 class="sub-header">Access requests awating your approval</h3>
+        <h3 class="sub-header">Requests awaiting your approval</h3>
         <table class="table">
             <thead>
             <tr>
+                <th>Domain Username</th>
                 <th>Watson Instance</th>
-                <th>Status</th>
                 <th>Request Date</th>
+                <th>Action</th>
             </tr>
             </thead>
             <c:forEach var="request" items="${requestsAwaitingApproval}">
                 <tr>
+                    <td>${request.domainUserName}</td>
                     <td>${request.watsonInstance}</td>
-                    <td>${request.finalResult}</td>
                     <td>${request.requestDate}</td>
+                    <td><a href="review/${request.requestId}">Review</a></td>
                 </tr>
             </c:forEach>
             <tbody>

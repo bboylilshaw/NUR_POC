@@ -8,7 +8,6 @@ import watson.user.dao.UserDaoImpl;
 import watson.user.model.HPEmployee;
 import watson.user.model.Request;
 
-import java.util.HashMap;
 import java.util.List;
 
 @Service("userService")
@@ -29,14 +28,14 @@ public class UserServiceImpl implements UserService {
         //if user doesn't exist and allow to submit the request
         if (!userExists && allowToSubmit) {
             String requestId = requestDao.submitRequest(hpEmployee, watsonInstance, comments);
-            //FIXME: get manager info and send notifications, hard code for now
-            String toManagerEmail = "yao.xiao@hp.com";
-            String ccEmail = "yao.xiao@hp.com";
-            String templateName = "EmailTemplates/UserRegInitialNotificationTemplate.vm";
-            HashMap<String, String> model = new HashMap<String, String>();
-            model.put("approver", "Approver");
-            model.put("url", "http://localhost:8080/NUR_POC/manager/review/request/" + requestId);
-            notificationService.sendEmailWithTemplate(toManagerEmail, ccEmail, templateName, model);
+            //TODO: get manager info and send notifications, hard code for now
+//            String toManagerEmail = "yao.xiao@hp.com";
+//            String ccEmail = "yao.xiao@hp.com";
+//            String templateName = "EmailTemplates/UserRegInitialNotificationTemplate.vm";
+//            HashMap<String, String> model = new HashMap<String, String>();
+//            model.put("approver", "Approver");
+//            model.put("url", "http://localhost:8080/NUR_POC/manager/review/request/" + requestId);
+//            notificationService.sendEmailWithTemplate(toManagerEmail, ccEmail, templateName, model);
         } else {//throw an error that user is not eligible to submit request
             throw new Exception("User already have the access to " + watsonInstance + ", or request is WIP/Approved");
         }
@@ -51,13 +50,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<Request> listOpenRequests(String domainUserName) {
         return requestDao.listOpenRequests(domainUserName);
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<Request> listRequestsAwaitingApproval(String domainUserName) {
         return requestDao.listRequestsAwaitingApproval(domainUserName);
     }

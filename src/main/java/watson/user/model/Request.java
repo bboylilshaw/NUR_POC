@@ -14,6 +14,7 @@ public class Request {
     private String requestId;
     private String watsonInstance;
     private String domainUserName;
+    private String country;
     private String employeeId;
     private String email;
     private Date requestDate;
@@ -36,11 +37,11 @@ public class Request {
     private String regionalRepProceed;
     private Date regionalRepProceedDate;
     private String regionalRepComments;
-    private String finalResult;
+    private String status;
 
     public Request() {
         this.requestId = UUID.randomUUID().toString();
-        this.finalResult = RequestStatus.INITIAL;
+        this.status = RequestStatus.INITIAL;
     }
 
     @Id
@@ -66,6 +67,14 @@ public class Request {
 
     public void setDomainUserName(String domainUserName) {
         this.domainUserName = domainUserName;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
     }
 
     public String getEmployeeId() {
@@ -244,11 +253,11 @@ public class Request {
         this.regionalRepComments = regionalRepComments;
     }
 
-    public String getFinalResult() {
-        return finalResult;
+    public String getStatus() {
+        return status;
     }
 
-    public void setFinalResult(String finalResult) {
-        this.finalResult = finalResult;
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

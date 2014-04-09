@@ -6,8 +6,6 @@ public interface CountryRepDao {
 
     public boolean isCountryRep(String domainUserName);
 
-    public CountryRep getCountryRepByCountryCode(String countryCode);
-
-    public CountryRep getCountryRep(String domainUserName, String countryCode);
+    public CountryRep getCountryRep(String watsonInstance, String countryCode);
 
 }

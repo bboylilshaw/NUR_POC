@@ -4,7 +4,9 @@
     <title>NUR</title>
 </head>
 <body>
-    <h1>${error}</h1><br/>
-    <h2>click <a href="home">here</a> to home page!</h2>
+    <div class="alert alert-danger">
+        <h3>${errMsg}</h3>
+    </div>
+    <h3>click <a href="home">here</a> to home page!</h3>
 </body>
 </html>

@@ -23,6 +23,7 @@ CREATE TABLE IF NOT EXISTS REQUEST (
   RequestId                 VARCHAR(36) NOT NULL PRIMARY KEY,
   WatsonInstance            VARCHAR(10),
   DomainUserName            VARCHAR(30),
+  Country                   VARCHAR(10),
   EmployeeID                VARCHAR(10),
   Email                     VARCHAR(30),
   RequestDate               DATE,
@@ -45,7 +46,7 @@ CREATE TABLE IF NOT EXISTS REQUEST (
   RegionalRepProceed        VARCHAR(5),
   RegionalRepProceedDate    DATE,
   RegionalRepComments       VARCHAR(100),
-  FinalResult               VARCHAR(4)
+  Status                    VARCHAR(4)
 );
 
 DROP TABLE IF EXISTS COUNTRY_REP;

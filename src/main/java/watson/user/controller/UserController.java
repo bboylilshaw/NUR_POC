@@ -65,14 +65,14 @@ public class UserController {
     @RequestMapping(value = "/access/request", method = RequestMethod.POST)
     public String doRequestAccess(HttpServletRequest req, ModelMap modelMap) {
         HPEmployee hpEmployee = (HPEmployee) req.getSession().getAttribute("hpEmployee");
-        String instance = req.getParameter("instance");
+        String watsonInstance = req.getParameter("watsonInstance");
         String comments = req.getParameter("comments");
 
         try {
-            userService.requestAccess(hpEmployee, instance, comments);
+            userService.requestAccess(hpEmployee, watsonInstance, comments);
         } catch (Exception e) {
             e.printStackTrace();
-            modelMap.addAttribute("error", e.getMessage());
+            modelMap.addAttribute("errMsg", e.getMessage());
             return "error";
         }
         return "redirect:/home";

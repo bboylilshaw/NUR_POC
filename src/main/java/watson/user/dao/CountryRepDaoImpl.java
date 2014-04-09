@@ -27,18 +27,15 @@ public class CountryRepDaoImpl implements CountryRepDao {
     }
 
     @Override
-    public CountryRep getCountryRepByCountryCode(String countryCode) {
-        String hql = "from CountryRep as cr where cr.countryCode=:countryCode and cr.effectiveStatus=:active";
+    public CountryRep getCountryRep(String watsonInstance, String countryCode) {
+        String hql = "from CountryRep as cr where cr.watsonInstance=:watsonInstance and cr.countryCode=:countryCode and cr.effectiveStatus=:active";
         Query query = sessionFactory.getCurrentSession().createQuery(hql);
-        List<CountryRep> countryReps = query.setString("countryCode", countryCode)
+        List<CountryRep> countryReps = query.setString("watsonInstance", watsonInstance)
+                                            .setString("countryCode", countryCode)
                                             .setString("active", "A")
                                             .list();
-        return countryReps.size() == 0 ? null : countryReps.get(0);
-    }
 
-    @Override
-    public CountryRep getCountryRep(String domainUserName, String countryCode) {
-        return null;
+        return countryReps.size() == 0 ? null : countryReps.get(0);
     }
 
 }
