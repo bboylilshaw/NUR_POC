@@ -42,9 +42,9 @@ public class ManagerServiceImpl implements ApproverService {
             throw new Exception("cannot find a country rep!");
         RegionalRep regionalRep = regionalRepDao.getRegionalRep(request.getWatsonInstance());
         if (regionalRep == null)
-            throw new Exception("connot find a region rep!");
+            throw new Exception("cannot find a region rep!");
 
-        requestDao.proceededByManager(request, proceedAction, comments, countryRep, regionalRep, skipCountryRep(request));
+        requestDao.updatedByManager(request, proceedAction, comments, countryRep, regionalRep, skipCountryRep(request));
 
         //TODO send notifications
 //        String toCountryRepEmail = "yao.xiao@hp.com";

@@ -1,24 +1,23 @@
 package watson.user.service;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import watson.user.model.HPEmployee;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = {"file:src/main/webapp/WEB-INF/spring-application-context.xml"})
 public class LDAPServiceImplTest {
 
-    public static ApplicationContext ctx;
-
-    @Before
-    public void getContext(){
-        ctx = new ClassPathXmlApplicationContext("WEB-INF/spring-application-context.xml");
-    }
+    @Autowired
+    private LDAPServiceImpl ldapService;
 
     @Test
     public void testGetEmployeeData(){
-        HPEmployee hpEmployee = ctx.getBean("ldapService", LDAPServiceImpl.class).getEmployeeDataByDomainUserName("ASIAPACIFIC\\xiaoyao");
+        HPEmployee hpEmployee = ldapService.getEmployeeDataByDomainUserName("ASIAPACIFIC\\xiaoyao");
         System.out.println("HP Employee: ");
         System.out.println("   DomainUserName = " + hpEmployee.getDomainUserName());
         System.out.println("   Employee Id = " + hpEmployee.getEmployeeId());
@@ -33,7 +32,6 @@ public class LDAPServiceImplTest {
 
     @Test
     public void testAuthenticateUser(){
-        boolean actual = ctx.getBean("ldapService", LDAPServiceImpl.class).authenticateUser("yao.xiao@hp.com", "");
-        Assert.assertTrue(actual);
+        Assert.assertTrue(ldapService.authenticateUser("yao.xiao@hp.com", ""));
     }
 }

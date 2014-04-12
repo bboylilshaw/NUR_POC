@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <html>
 <head>
     <%@ include file="header.jsp"%>
@@ -36,7 +37,7 @@
                 <tr>
                 <td>${request.watsonInstance}</td>
                 <td>${request.status}</td>
-                <td>${request.requestDate}</td>
+                <td><fmt:formatDate value="${request.requestDate}" pattern="MM/dd/yyyy"/></td>
                 </tr>
             </c:forEach>
             </tbody>
@@ -56,7 +57,7 @@
                 <tr>
                     <td>${request.domainUserName}</td>
                     <td>${request.watsonInstance}</td>
-                    <td>${request.requestDate}</td>
+                    <td><fmt:formatDate value="${request.requestDate}" pattern="MM/dd/yyyy"/></td>
                     <td><a href="review/${request.requestId}">Review</a></td>
                 </tr>
             </c:forEach>

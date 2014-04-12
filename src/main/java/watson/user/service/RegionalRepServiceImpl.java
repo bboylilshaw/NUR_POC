@@ -31,7 +31,7 @@ public class RegionalRepServiceImpl implements ApproverService {
     @Transactional
     public void proceedRequest(String requestId, String proceedAction, String comments) throws Exception{
         Request request = this.reviewRequest(requestId);
-        requestDao.proceededByRegionalRep(request, proceedAction, comments);
+        requestDao.updatedByRegionalRep(request, proceedAction, comments);
 
         //TODO send notifications
 //        String toCountryRepEmail = "yao.xiao@hp.com";

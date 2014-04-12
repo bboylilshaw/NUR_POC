@@ -11,28 +11,26 @@ public interface RequestDao {
 
     public Request getRequestById(String requestId);
 
-    public String submitRequest(HPEmployee hpEmployee, String watsonInstance, String comments);
+    public boolean exists(String domainUserName, String watsonInstance);
 
-    public Request proceededByManager(Request request, String proceedAction, String comments, CountryRep countryRep, RegionalRep regionalRep);
+    public boolean isApproved(String domainUserName, String watsonInstance);
 
-    public Request proceededByManager(Request request, String proceedAction, String comments, CountryRep countryRep, RegionalRep regionalRep, boolean skipCountryRep);
+    public boolean isPendingApproval(String domainUserName, String watsonInstance);
 
-    public Request proceededByCountryRep(Request request, String proceedAction, String comments, RegionalRep regionalRep);
+    public String save(HPEmployee hpEmployee, String watsonInstance, String comments);
 
-    public Request proceededByRegionalRep(Request request, String proceedAction, String comments);
+    public Request updatedByManager(Request request, String proceedAction, String comments, CountryRep countryRep, RegionalRep regionalRep);
 
-    public boolean allowToSubmit(String domainUserName, String watsonInstance);
+    public Request updatedByManager(Request request, String proceedAction, String comments, CountryRep countryRep, RegionalRep regionalRep, boolean skipCountryRep);
 
-    public List<Request> listOpenRequests(String domainUserName);
+    public Request updatedByCountryRep(Request request, String proceedAction, String comments, RegionalRep regionalRep);
+
+    public Request updatedByRegionalRep(Request request, String proceedAction, String comments);
+
+    public List listOpenRequests(String domainUserName);
 
     public List<Request> listRequestsAwaitingApproval(String domainUserName);
 
-    public List<Request> listRequestsAwaitingManagerApproval(String managerDomainUserName);
-
-    public List<Request> listRequestsAwaitingCountryRepApproval(String watsonInstance, String countryCode);
-
-    public List<Request> listRequestsAwaitingRegionalRepApproval(String watsonInstance);
-
-    public int getCurrentApprovalLevel(String requestId);
+    public List<Request> listRequestsAwaitingApproval(String domainUserName, String approverLevel);
 
 }

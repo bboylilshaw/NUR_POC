@@ -20,7 +20,7 @@ public class UserController {
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String index(HttpServletRequest req) {
         if (req.getSession().getAttribute("hpEmployee") != null) {
-            return "redirect:/home";
+            return "forward:/home";
         }
         return "index";
     }
@@ -69,7 +69,7 @@ public class UserController {
         String comments = req.getParameter("comments");
 
         try {
-            userService.requestAccess(hpEmployee, watsonInstance, comments);
+            userService.submitRequest(hpEmployee, watsonInstance, comments);
         } catch (Exception e) {
             e.printStackTrace();
             modelMap.addAttribute("errMsg", e.getMessage());

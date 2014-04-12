@@ -7,8 +7,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 import watson.user.model.CountryRep;
 
-import java.util.List;
-
 @Repository("countryRepDao")
 public class CountryRepDaoImpl implements CountryRepDao {
 
@@ -17,25 +15,24 @@ public class CountryRepDaoImpl implements CountryRepDao {
     private SessionFactory sessionFactory;
 
     @Override
-    public boolean isCountryRep(String domainUserName) {
+    public boolean exists(String domainUserName) {
         String hql = "from CountryRep as cr where cr.domainUserName=:domainUserName and cr.effectiveStatus=:active";
         Query query = sessionFactory.getCurrentSession().createQuery(hql);
-        List<CountryRep> countryReps = query.setString("domainUserName", domainUserName)
-                                            .setString("active", "A")
-                                            .list();
-        return countryReps.size() <= 0;
+        int results = query.setString("domainUserName", domainUserName)
+                           .setString("active", "A")
+                           .list().size();
+        return results > 0;
     }
 
     @Override
     public CountryRep getCountryRep(String watsonInstance, String countryCode) {
         String hql = "from CountryRep as cr where cr.watsonInstance=:watsonInstance and cr.countryCode=:countryCode and cr.effectiveStatus=:active";
         Query query = sessionFactory.getCurrentSession().createQuery(hql);
-        List<CountryRep> countryReps = query.setString("watsonInstance", watsonInstance)
-                                            .setString("countryCode", countryCode)
-                                            .setString("active", "A")
-                                            .list();
 
-        return countryReps.size() == 0 ? null : countryReps.get(0);
+        return (CountryRep) query.setString("watsonInstance", watsonInstance)
+                                 .setString("countryCode", countryCode)
+                                 .setString("active", "A")
+                                 .uniqueResult();
     }
 
 }

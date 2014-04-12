@@ -27,10 +27,10 @@
     <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="locations">
             <list>
-                <value>/WEB-INF/conf/dataSource.properties</value>
-                <value>/WEB-INF/conf/hibernate.properties</value>
-                <value>/WEB-INF/conf/mail.properties</value>
-                <value>/WEB-INF/conf/ldap.properties</value>
+                <value>classpath*:dataSource.properties</value>
+                <value>classpath*:hibernate.properties</value>
+                <value>classpath*:mail.properties</value>
+                <value>classpath*:ldap.properties</value>
             </list>
         </property>
     </bean>
@@ -61,7 +61,7 @@
         <property name="hibernateProperties">
             <props>
                 <prop key="hibernate.dialect">${hibernate.dialect}</prop>
-                <!-- hibernate.current_session_context_class 在使用Spring @Transactional时需要注释掉 -->
+                <!-- if using Spring to manage transactions, hibernate.current_session_context_class needs to be commented -->
                 <!--<prop key="hibernate.current_session_context_class">${hibernate.current_session_context_class}</prop>-->
                 <prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
                 <prop key="hibernate.format_sql">${hibernate.format_sql}</prop>

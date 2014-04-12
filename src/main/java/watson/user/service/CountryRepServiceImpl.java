@@ -37,7 +37,7 @@ public class CountryRepServiceImpl implements ApproverService {
         RegionalRep regionalRep = regionalRepDao.getRegionalRep(request.getWatsonInstance());
         if (regionalRep == null)
             throw new Exception("connot find a region rep!");
-        requestDao.proceededByCountryRep(request, proceedAction, comments, regionalRep);
+        requestDao.updatedByCountryRep(request, proceedAction, comments, regionalRep);
 
         //TODO send notifications
 //        String toCountryRepEmail = "yao.xiao@hp.com";

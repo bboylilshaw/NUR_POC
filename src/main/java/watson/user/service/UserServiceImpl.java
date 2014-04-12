@@ -20,14 +20,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void requestAccess(HPEmployee hpEmployee, String watsonInstance, String comments) throws Exception {
-        //check if user is qualified to request access
-        boolean userExists = userDao.userExists(hpEmployee.getDomainUserName(), watsonInstance);
-        boolean allowToSubmit = requestDao.allowToSubmit(hpEmployee.getDomainUserName(), watsonInstance);
+    public void submitRequest(HPEmployee hpEmployee, String watsonInstance, String comments) throws Exception {
+        //check if user is allowed to request access
+        boolean requestExists = requestDao.exists(hpEmployee.getDomainUserName(), watsonInstance);
 
         //if user doesn't exist and allow to submit the request
-        if (!userExists && allowToSubmit) {
-            String requestId = requestDao.submitRequest(hpEmployee, watsonInstance, comments);
+        if (requestExists) {
+            throw new Exception("Your request cannot be submitted! You had requested access to " + watsonInstance + " before, and it is pending approval or has been approved!");
+        } else {//throw an error that user is not eligible to submit request
+
+            String requestId = requestDao.save(hpEmployee, watsonInstance, comments);
             //TODO: get manager info and send notifications, hard code for now
 //            String toManagerEmail = "yao.xiao@hp.com";
 //            String ccEmail = "yao.xiao@hp.com";
@@ -36,14 +38,12 @@ public class UserServiceImpl implements UserService {
 //            model.put("approver", "Approver");
 //            model.put("url", "http://localhost:8080/NUR_POC/manager/review/request/" + requestId);
 //            notificationService.sendEmailWithTemplate(toManagerEmail, ccEmail, templateName, model);
-        } else {//throw an error that user is not eligible to submit request
-            throw new Exception("User already have the access to " + watsonInstance + ", or request is WIP/Approved");
         }
 
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<Request> listCurrentAccess(String domainUserName) {
         //TODO need to check HPUser for current status
         return null;
