@@ -3,34 +3,31 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:tx="http://www.springframework.org/schema/tx"
-       xmlns:task="http://www.springframework.org/schema/task"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
                            http://www.springframework.org/schema/beans/spring-beans.xsd
                            http://www.springframework.org/schema/context
                            http://www.springframework.org/schema/context/spring-context.xsd
                            http://www.springframework.org/schema/tx
-                           http://www.springframework.org/schema/tx/spring-tx.xsd
-                           http://www.springframework.org/schema/task
-                           http://www.springframework.org/schema/task/spring-task.xsd">
+                           http://www.springframework.org/schema/tx/spring-tx.xsd">
 
-    <context:annotation-config/>
+    <!-- Configure application context -->
+    <context:annotation-config />
     <context:component-scan base-package="watson.user">
         <!-- Scan all components except for @Controller -->
-        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller" />
     </context:component-scan>
-    <tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true"/>
-    <task:annotation-driven executor="myExecutor" scheduler="myScheduler" proxy-target-class="true"/>
-    <task:executor id="myExecutor" pool-size="5"/>
-    <task:scheduler id="myScheduler" pool-size="10"/>
+
+    <!-- Configure transaction manager -->
+    <tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true" />
 
     <!-- Load all properties files -->
     <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="locations">
             <list>
-                <value>classpath*:dataSource.properties</value>
-                <value>classpath*:hibernate.properties</value>
-                <value>classpath*:mail.properties</value>
-                <value>classpath*:ldap.properties</value>
+                <value>classpath*:conf/dataSource.properties</value>
+                <value>classpath*:conf/hibernate.properties</value>
+                <value>classpath*:conf/mail.properties</value>
+                <value>classpath*:conf/ldap.properties</value>
             </list>
         </property>
     </bean>
@@ -75,7 +72,7 @@
     </bean>
 
     <!-- Import other beans.xml files  -->
-    <import resource="notificationServiceBeans.xml" />
-    <import resource="ldapServiceBeans.xml" />
+    <import resource="spring-beans-notificationService.xml" />
+    <import resource="spring-beans-ldapService.xml" />
 
 </beans>

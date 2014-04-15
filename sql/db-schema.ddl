@@ -1,7 +1,9 @@
+DROP DATABASE IF EXISTS NUR;
+CREATE DATABASE NUR;
 USE NUR;
-DROP TABLE IF EXISTS HPUSER;
-CREATE TABLE IF NOT EXISTS HPUSER (
-  Gid                 VARCHAR(36) NOT NULL PRIMARY KEY,
+DROP TABLE IF EXISTS HP_USER;
+CREATE TABLE HP_USER (
+  Gid                 VARCHAR(36) NOT NULL,
   WatsonInstance      VARCHAR(10),
   DomainUserName      VARCHAR(30),
   DomainUserNameIndex VARCHAR(30),
@@ -15,12 +17,14 @@ CREATE TABLE IF NOT EXISTS HPUSER (
   CreateDate          DATE,
   CreatedBy           VARCHAR(32),
   LastModifyDate      DATE,
-  LastModifiedBy      VARCHAR(32)
-);
+  LastModifiedBy      VARCHAR(32),
+  PRIMARY KEY (Gid)
+)
+  DEFAULT CHARSET =UTF8;
 
 DROP TABLE IF EXISTS REQUEST;
-CREATE TABLE IF NOT EXISTS REQUEST (
-  RequestId                 VARCHAR(36) NOT NULL PRIMARY KEY,
+CREATE TABLE REQUEST (
+  RequestId                 VARCHAR(36) NOT NULL,
   WatsonInstance            VARCHAR(10),
   DomainUserName            VARCHAR(30),
   Country                   VARCHAR(10),
@@ -46,11 +50,13 @@ CREATE TABLE IF NOT EXISTS REQUEST (
   RegionalRepProceed        VARCHAR(5),
   RegionalRepProceedDate    DATE,
   RegionalRepComments       VARCHAR(100),
-  Status                    VARCHAR(4)
-);
+  Status                    VARCHAR(4),
+  PRIMARY KEY (RequestId)
+)
+  DEFAULT CHARSET =UTF8;
 
 DROP TABLE IF EXISTS COUNTRY_REP;
-CREATE TABLE IF NOT EXISTS COUNTRY_REP (
+CREATE TABLE COUNTRY_REP (
   Gid             VARCHAR(36) NOT NULL PRIMARY KEY,
   WatsonInstance  VARCHAR(10),
   DomainUserName  VARCHAR(30),
@@ -61,11 +67,13 @@ CREATE TABLE IF NOT EXISTS COUNTRY_REP (
   EffectiveDate   DATE,
   TerminateDate   DATE,
   EffectiveStatus VARCHAR(1),
-  AssignedBy      VARCHAR(36)
-);
+  AssignedBy      VARCHAR(36),
+  PRIMARY KEY (Gid)
+)
+  DEFAULT CHARSET =UTF8;
 
 DROP TABLE IF EXISTS REGIONAL_REP;
-CREATE TABLE IF NOT EXISTS REGIONAL_REP (
+CREATE TABLE REGIONAL_REP (
   Gid             VARCHAR(36) NOT NULL PRIMARY KEY,
   WatsonInstance  VARCHAR(10),
   DomainUserName  VARCHAR(30),
@@ -75,5 +83,7 @@ CREATE TABLE IF NOT EXISTS REGIONAL_REP (
   EffectiveDate   DATE,
   TerminateDate   DATE,
   EffectiveStatus VARCHAR(1),
-  AssignedBy      VARCHAR(36)
-);
+  AssignedBy      VARCHAR(36),
+  PRIMARY KEY (Gid)
+)
+  DEFAULT CHARSET =UTF8;

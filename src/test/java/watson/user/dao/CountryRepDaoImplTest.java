@@ -10,8 +10,8 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"file:src/main/webapp/WEB-INF/spring-application-context.xml"})
-@TransactionConfiguration(transactionManager="transactionManager")
+@ContextConfiguration("classpath*:spring-application-context.xml")
+@TransactionConfiguration(transactionManager="transactionManager", defaultRollback = true)
 @Transactional
 public class CountryRepDaoImplTest {
 
