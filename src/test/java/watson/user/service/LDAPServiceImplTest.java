@@ -9,7 +9,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import watson.user.model.HPEmployee;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"file:../../../../../main/resources/spring-application-context.xml"})
+@ContextConfiguration("classpath*:spring-application-context.xml")
 public class LDAPServiceImplTest {
 
     @Autowired

@@ -24,10 +24,10 @@
     <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="locations">
             <list>
-                <value>classpath*:conf/dataSource.properties</value>
-                <value>classpath*:conf/hibernate.properties</value>
-                <value>classpath*:conf/mail.properties</value>
-                <value>classpath*:conf/ldap.properties</value>
+                <value>classpath*:jdbc.properties</value>
+                <value>classpath*:hibernate.properties</value>
+                <value>classpath*:mail.properties</value>
+                <value>classpath*:ldap.properties</value>
             </list>
         </property>
     </bean>

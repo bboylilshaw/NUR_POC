@@ -6,7 +6,7 @@ import javax.persistence.Table;
 import java.util.Date;
 
 @Entity
-@Table(name = "HPUSER")
+@Table(name = "HP_USER")
 public class HPUser {
     private String gid;
     private String watsonInstance;

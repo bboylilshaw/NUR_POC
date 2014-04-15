@@ -3,7 +3,7 @@ CREATE DATABASE NUR;
 USE NUR;
 DROP TABLE IF EXISTS HP_USER;
 CREATE TABLE HP_USER (
-  Gid                 VARCHAR(36) NOT NULL,
+  Gid                 VARCHAR(36),
   WatsonInstance      VARCHAR(10),
   DomainUserName      VARCHAR(30),
   DomainUserNameIndex VARCHAR(30),
@@ -24,7 +24,7 @@ CREATE TABLE HP_USER (
 
 DROP TABLE IF EXISTS REQUEST;
 CREATE TABLE REQUEST (
-  RequestId                 VARCHAR(36) NOT NULL,
+  RequestId                 VARCHAR(36),
   WatsonInstance            VARCHAR(10),
   DomainUserName            VARCHAR(30),
   Country                   VARCHAR(10),
@@ -57,7 +57,7 @@ CREATE TABLE REQUEST (
 
 DROP TABLE IF EXISTS COUNTRY_REP;
 CREATE TABLE COUNTRY_REP (
-  Gid             VARCHAR(36) NOT NULL PRIMARY KEY,
+  Gid             VARCHAR(36),
   WatsonInstance  VARCHAR(10),
   DomainUserName  VARCHAR(30),
   EmployeeID      VARCHAR(10),
@@ -74,7 +74,7 @@ CREATE TABLE COUNTRY_REP (
 
 DROP TABLE IF EXISTS REGIONAL_REP;
 CREATE TABLE REGIONAL_REP (
-  Gid             VARCHAR(36) NOT NULL PRIMARY KEY,
+  Gid             VARCHAR(36),
   WatsonInstance  VARCHAR(10),
   DomainUserName  VARCHAR(30),
   EmployeeID      VARCHAR(10),
